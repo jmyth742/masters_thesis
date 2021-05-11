@@ -1,0 +1,265 @@
+\section{equations notes}
+$$\sum_{j=1}^{k}$$
+
+$X_1$ \\
+$X_2$ \\
+$X_n$ \\
+
+$S_1,X_1 = \sqrt{E}u_X_1$ \\
+$S_2,X_2 = \sqrt{E}u_X_2$ \\
+$S_n,X_n = \sqrt{E}u_X_n$ \\
+
+$S_n = 1(X_i = n)$\\
+
+
+$S_1,X_1$ \\
+$S_2,X_2$ \\
+$S_{N,X_N}$ \\
+
+$h_n = 1/sqrt(2) * ((randn(u_n_i,1)+1j*(randn(u_n_i,1))$
+
+
+$S_j,X_j = \sqrt{E}N_ju_j$ \\
+
+$$N_j = \sum_{i=1}^{n}1(X_i = j)$$ \\
+
+$$\sum_{j=1}^{k}\sqrt{E}N_ju_j + v$$ \\
+
+$u_1...,u_k$ \\
+$_k$ orthonormal waveforms
+
+$v$, white proper-complex\\
+Gaussian noise. \\
+
+$||S_i,X_i||^2 \leq E$ \\
+
+$\vec{\theta} $\\ 
+
+$$\hat{\theta}$ \\
+
+$$N_j = \sum_{n=1}^{N} S_n + v$$ \\
+
+
+$$N_j = \sum_{n=1}^{N} u_{n,i} + v_i$$ \\
+
+$$N_i = \sum_{n=1}^{N} 1(X_n = i)$$ \\
+
+
+$z_i$\\
+
+$S_{1,X_1}$ \\
+$S_{2,X_2}$ \\
+$S_{n,X_n}$ \\
+$S_n = S_{n,X_n}$ \\
+$X_N$ \\
+
+
+\begin{tabular}{lp{5cm}}
+\verb|Symbol of Device n| & - $s_n$ \\
+\verb|Noise|             & - $v$ \\
+\verb|Channel Output|                  & - $z$ \\
+\verb|Observation|   & - X \\
+\verb|Device|   & - $_n...N$ \\
+\verb|Channel Fade|   & - $h_n$ \\
+\end{tabular}
+
+
+
+
+\begin{tabular}{lp{5cm}}
+\verb|Device Symbol n, at subcarrier i| & - $u_{n,i}$ \\
+\verb|Noise| & - v \\
+\verb|Channel output| & - z \\
+\verb|Number of UEs| & - N \\
+\verb|Observation| & - X \\
+\verb|Device| & - $_n$ 
+
+\verb|Waveform| & - u \\
+\verb|Energy| & - E \\
+\end{tabular}
+
+
+$y_l = \sum_{k=1}^{K}h_{k,l} \cdot x_k + v_l$ 
+
+
+$X \in \{{1...j,...J}\} $,\\ 
+Integers only, \\ randomly uniformly taken from set
+
+$u_{1,i}$
+$u_{2,i}$
+$u_{N,i}$
+
+$z_i = (z_1...z_N)^T$
+
+\begin{equation}
+  u_{n,i} =
+    \begin{cases}
+      1 & \text{ $X_n = i$}\\
+      0 & \text{otherwise}
+    \end{cases}       
+\end{equation}
+
+
+\[y_{h[n],s[u_{n_i}]}= U_{[n],s[u_{n_i}]} \cdot h \]
+\[y_{h[n],s}= U_{[n],s} \circledast channelResponse \]
+\[ y_{sum,s} = \sum_{n=1}^{N}y_{h_{[n],s}}\]
+\[ z = y_{sum,{s_{i}}} + \sqrt{\sigma2}_{i} + \sqrt{signal_{power}}_{i} + v_{i}\]
+\[ z_{[i]} = y_{h,[X_i]} + v\]
+
+
+
+\begin{figure}[H]
+    \centering
+\begin{equation}
+X \in \{{1...j,...J}\} 
+\end{equation}
+    \caption{X only an integer taken uniformly from the set}
+    \label{fig:set_range}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+\begin{equation}
+  u_{n,i} =
+    \begin{cases}
+      1 & \text{ $X_n = i$}\\
+      0 & \text{otherwise}
+    \end{cases}       
+\end{equation}
+    \caption{Equation showing the signature of of device n}
+    \label{fig:uni_otherwise}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+\begin{equation}
+    N_i = \sum_{n=1}^{N} 1(X_n = i)
+\end{equation}
+    \caption{Equation showing how to compute the sum of the symbols. }
+    \label{fig:sums}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+\begin{equation}
+    z_i = (z_1...z_N)^T
+\end{equation}
+    \caption{Equation showing how channel output is attained from a row vector to column vector}
+    \label{fig:my_label}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+\begin{equation}
+    z_i = \sum_{n=1}^{N} h_{n,i} \cdot u_{n,i} + v_i
+\end{equation}
+    \caption{Equation showing sum of the signatures plus noise. }
+    \label{fig:my_label}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+\begin{equation}
+   h_n = \frac{1}{\sqrt{2}}\cdot((randn(u_ni)+1j\cdot(randn(u_ni))
+\end{equation}
+    \caption{Equation showing random channel fade, h }
+    \label{fig:my_label}
+\end{figure}
+
+
+
+
+% \subsubsection{Users}
+% As discussed in the previous sections, one point of interest was to see how the number of users in a given network would affect the outcome of the TBMA, various simulations were done for different numbers of users. 
+
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[
+%       width=10cm,
+%      height=12cm,
+%     keepaspectratio,]
+%     {mse_snr_users.png}
+%     \caption{MSE Vs SNR - comparison of different users}
+%     \label{fig:mse_users}
+% \end{figure}
+
+% As per Figure \ref{fig:mse_users}, the amount of users in the network of nodes does not have an affect on the overall MSE of the systems. it can be said that this shows that the users don't have much of an affect on the MSE and overall performance of the estimation of the received signal.
+
+% \subsubsection{Re-transmissions}
+% The two key parameters of the simulation, the number of users in the network and the amount of re-transmissions each user sends with the same observation and encoding. Using the MSE as a method of evaluation simulations were ran on various coding schemes to pinpoint which were the key parameters to optimise. The next figure \ref{fig:mse_users} shows the comparison of MSE at different Signal to noise ratios for different amounts of users in the simulations. Overall, we see that at low SNR ranges, the systems behave similarly, this is due to the high amounts of the noise in the systems. At the other end of the spectrum, we see that the MSE saturates around 20dB, showing that at this point the the SNR has no longer an affect on the MSE performance. 
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[
+%       width=12cm,
+%      height=14cm,
+%     keepaspectratio,]
+%     {retx_increae.png}
+%     \caption{MSE Vs SNR - comparison of different re-transmissions}
+%     \label{fig:mse_rtx}
+% \end{figure}
+
+% Next, looking at Figure \ref{fig:mse_rtx}, we can see how the different numbers of re-transmissions of the same signal have a differing affect of the MSE, which is quite understandable as the estimation is averaging each of the re-transmission of the same signal. This can clearly be seen to smooth out the effect of the random noise introduced during transmission. We can also clearly see that the re-transmissions are increased in number, the effect on the reduction of the MSE is also reduced. 
+
+
+
+
+
+
+
+
+
+
+
+
+% In signal processing the use of filters is common practice, a filter is used to remove undesirable frequencies or noise in a given signal[ref]. In the case of the system model the noise is modelled as white complex Gaussian, the matches filter is used as an optimal linear filter for maximising the signal to noise ratio (SNR), this does not reduce the noise in the signal, but maximises the signal power to the noise values. Where the input signal of TBMA is convolved across a channel response.
+
+% Looking at how the matched filter works, the first step is looking at the convolution works. 
+% \begin{align} 
+%     y(t) = h(t) \circledast x(t)
+%     \label{conv_eq}
+% \end{align}
+% Where $y(t)$ is the output of the channel, $x(t)$ is the input signal and $h(t)$ is the channel response. The convolution in the equation \ref{conv_eq} equates to :
+% \begin{align}
+%      \int_{-\infty}^{\infty} x(\tau) \cdot h(t-\tau) \,d\tau
+% \end{align}
+% where, we have two signal, $h(t)$ and $x(t)$, replacing $t$ with a dummy variable $\tau$ so not to confuse the signal of time $t$ with the particular instance of variable $t$. During the convolution, we want one signal to remain fixed $x(\tau)$, whilst the other is shifted and reversed, $h(\tau)$ to calculate the total amount of overlap. First we perform the time reversal operation (scaling) , $h(-\tau)$; 
+
+% \begin{align}
+%     h[-(\tau-t)] = h(t-\tau)
+% \end{align}
+
+% next the time shifting operation, thus ;
+
+% \begin{align}
+%   x(\tau) \cdot h(t-\tau)
+%   \label{conv_pre_int}
+% \end{align}
+
+% With a matched filter we sample the convolution of the signal at certain time plus some noise 
+% and finally the integration is done on the output equation \ref{conv_pre_int}
+% \begin{align}
+%     y(T) = s(t) \circledast h(t) \bigg\rvert_{t = T} +  w(t) \circledast h(t) \bigg\rvert_{t = T}       
+% \end{align}
+% \begin{align}
+%     = y_{S}(t) + y_{w}(t)
+% \end{align}
+% \begin{align}
+%     SNR = \frac{y_{S}^2(t)}{\mathbb{E}[y_{w}^2(t)]}
+%     \label{snr_matched}
+% \end{align}
+
+% Where, the equation \ref{snr_matched}, shows the signal to noise ratio at the sampling time $t$, with the expected noise at time $t$ (this expected noise is considered a random variable). Thus the SNR is maximised when the value of $h(t)$ is chosen such that it matches the input, $S(t)$. Where the time is reversed and is shifted by $T$ (shown \ref{shifted_t}).
+% \begin{align}
+%     h(t)= S(T-t)
+%     \label{shifted_t}
+% \end{align}
+
+% when the impulse response has the same shape as the input filter, where the time is reversed and shifted by $T$, then we are left with the power spectral density of the noise with the added up energy of the signal over that period of time (depicted \ref{power_spec_end}). 
+
+% \begin{align}
+%     \frac{2}{N_{0}} \int_{0}^{T}S^2(t) \,dt
+%     \label{power_spec_end}
+% \end{align}

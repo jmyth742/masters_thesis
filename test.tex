@@ -1,0 +1,24 @@
+We consider a set $\mathcal{K}$ of $\lvert \mathcal{K}\rvert = K$ sensor nodes, jointly observing conditionally \ac{i.i.d.} data $X^i_1, \ldots, X^i_K$ given a parameter $\theta$ and $i$ being the observation index.
+
+It is assumed, that each ${X^i_k \in \{1, \ldots, R\}}$ takes a discrete value with \ac{PMF}~${p_{\theta} = [p_{\theta}(1), \ldots, p_{\theta}(R)]}$. 
+
+The \ac{PMF} belongs to a family $\{p_{\theta}: \theta \in \Theta\}$ where $\Theta \subset \mathbb{R}$ is the parameter space.
+
+To access the wireless channel, each sensor transmits a signature waveform $\boldsymbol{s}_{X^i_k} \in \mathbb{C}^{N \times 1}$, which depends on the local observation $X^i_k$ and we assume the set $\left\{\boldsymbol{s}_r\right\}_{r \in [R]}$ to be orthonormal.
+%
+Due to the additive nature of the wireless medium, the received signal at the $i$-th transmission at fusion center reads
+%
+\begin{align}
+    \boldsymbol{y}^i = \sum_{k \in \mathcal{K}} h^i_k \boldsymbol{s}_{X^i_k} + \boldsymbol{w}^i, \label{eq:y_rx}
+\end{align}
+%
+where $h_k^i$ is the complex channel coefficient which is assumed to remain constant during the $i$-th transmission and $\boldsymbol{w}^i \sim \mathcal{CN}(0, \sigma^2 \boldsymbol{I}_N)$.
+%
+After observing the received signal~\eqref{eq:y_rx}, the fusion center applies a bank of filters matched to the orthonormal basis $\left\{ \boldsymbol{s}_r\right\}_{r \in [R]}$ which gives 
+%
+\begin{align}
+    \boldsymbol{z}^i &\triangleq \left[\langle \boldsymbol{y}^i, \boldsymbol{s}_1\rangle, \ldots, \langle \boldsymbol{y}^i, \boldsymbol{s}_R\rangle  \right]^T, \label{eq:mf_output}
+\end{align}
+%
+where $\langle \boldsymbol{y}^i, \boldsymbol{s}_r\rangle$ denote the inner product of the received signal and $\boldsymbol{s}_r$ at the $i$-th transmission.
+%
