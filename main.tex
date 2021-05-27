@@ -61,6 +61,8 @@
 \item Least significant bit - LSB
 \item Radio Resource Control - RRC
 \item Cyclic Prefix - CP
+\item Proof of Concept - POC
+\item Universal Software Radio Peripheral - USRP
 \end{itemize} 
 
 \section{Abstract}
@@ -275,6 +277,13 @@ RI - Rank indicator,  this is the number of layers and number of different data 
 
 Additionally the LTE framework has another form of feedback that is also transmitted on the PUCCH. The Hybrid Automatic Repeat Request (HARQ) is also utilised. The HARQ consists of two parts, firstly the ARQ in LTE is a mechanism that as the name suggests repeats the request if an acknowledgement (ACK) is not received by the sender after a predefined timeout period.  After this timeout period the receiver discards the bad packets and the sender will re-transmit. The next step is the Forward Error Correction (FEC), this process takes the malformed data packets and stores them in a buffer until the next transmission, the idea is that 2 or more packets received with insufficient information to decode them alone can be combined together in such a way they can produce a signal that can be decoded \cite{3gpp36321}[5.3.2 HARQ operation].
 
+The process of getting from a raw ACK/NACK value to the  the physical encoding of the particularly chosen format is described in various specifications from 3GPP. The overall process is as follows (steps discussed in further details in subsequent paragraphs):
+\begin{enumerate}\label{proc_pucch_configs}
+    \item The UE would verify the configuration of the PUCCH, this is detailed in Section 5.4 36.211, this 
+    \item Procedure for determining PUCCH assignment 10.1 36.213 The 3GPP Specification outlines the explicit rules and combinations that the PUCCH can take. This section outlines the combinations of non/simultaneous and single/multiple cell transmission over PUCCH and PUSCH. This section also outlines the information which is to be transmitted in based on the choice of format. 
+    \item How the PUCCH bits should be encoded according to Table 5.4.1-1 in Section 5.4.1 of 36.211, this table outlines the modulation scheme to be adopted and the number of bits per sub frame according to the chosen format.
+    \item Finally, how to map PUCCH symbols to physical resources according to 5.4.3 in 36.211, this is described in greater detail in  
+\end{enumerate} 
 The HARQ mechanism in LTE is encoded into the UCI and carried usually on the PUCCH, however dependant on some conditions can also be carried on the PUSCH. The UCI format dictates the type of feedback metric to be transmitted, which we can see in the \cref{tab:pucch_formats} \cite[Section 17.3.1.2]{umts_sesia}. 
 
 \begin{table}[h]
@@ -328,7 +337,6 @@ When the PUCCH is being utilised to transmit the feedback control data, a region
     \caption{Resource Assignment PUCCH Format 1/2}
     \label{fig:pucchformats}
 \end{figure}
-
 
 
 As we see in \cref{tab:pucch_formats} is possible to multiplex both the CQI and HARQ ACK/NACK data from a UE to the eNB on the PUCCH, providing the higher layers have not disabled this feature, when this is disabled the UE may only transmit the HARQ. However, in sub frames where the eNB scheduler has allowed for simultaneous transmission of both metrics a multiplex of both aspects needs to be achieved. In this case there are two situations of note, for normal CP and extended CP \cite{umts_sesia}[Section 17.3.3]. 
@@ -452,7 +460,7 @@ As presented in the previous section, we are interested in three different data-
 Where, $\hat{\theta}$ and $\hat{p}^*$ are the parameter and PMF of the received signal respectively which exist in the defined probability space $[R]$.  We assume that there is no prior knowledge of the parameter $\theta$ or $p_{\theta}$, since the idea of the approach is to derive an estimate of the distribution of the data.
 
 
-\subsubsection{Deterministic Channel}
+\subsubsection{Deterministic Channel}\label{det_chan}
 
 It is assumed that the data is i.i.d between sensors but constant during different observation periods. For the specific case of identical channels ${(h^i_k = 1, \forall k)}$, the output of the bank of matched filters in Equation (\ref{eq:mf_output}) contains a noisy version of the histogram, scaled by the number of users, written as
 %
@@ -477,7 +485,7 @@ Given the above estimation method, we observe some notable pieces of information
 For $K <\infty:$ The estimated PMF (\ref{eq:empf_h_const}) describes the current sample but ~$D(\hat{p}\| p_{\theta}) \neq 0$. With re-sampling over multiple transmission intervals (e.g. by selecting random subsets $\mathcal{K}^i \subset \mathcal{K}$ for transmission during the $i$-th observation interval) different measures of accuracy can be assigned (bias, variance or prediction error) to the sample estimates.
 
 
-\subsubsection{Random Complex Channel}
+\subsubsection{Random Complex Channel}\label{rand_chan}
 
 In the real world, it is more often than not less likely that a transmitted and receiver are in a direct line of sight (direct line of sight is when the transmission is unobstructed or reflected by obstacles in the environment). What tends to happen is that in busy environments there are obstacles such as buildings and walls that will obstruct the path of the disseminating wireless waves. The situation leads to multi path waves arriving at the receiver at different time intervals and power due to the physical affect the aforementioned obstacles have on the physicality of the waves.[ref]
 
@@ -883,7 +891,7 @@ Looking now at the random complex channel analysis, seen in Figure \ref{fig:comp
 
 \section{Application to the LTE framework}\label{lte_app}
 \subsection{Introduction}
-In this section the process of implementing the TBMA approach to the Long term evolution (LTE) framework is investigated and discussed, Looking at the different protocol layers and architecture. The given use-case of using TBMA as a feedback mechanism for multicast transmission as of the time of writing this thesis is not yet present. This section will progress through the different aspects of the LTE framework to investigate how such a feature could be consolidated with the current implementation. In section \cref{lte_feedback_current}, we examine how feedback is currently implemented is investigated with respect to CSI and ACK/NACK information, this section will outline how this can be adopted to serve TBMA for a simple use case such as ACK/NACK.
+In this section the process of implementing the TBMA approach to the Long term evolution (LTE) framework is investigated and discussed, Looking at the different protocol layers and architecture. The given use-case of using TBMA as a feedback mechanism for multicast transmission as of the time of writing this thesis is not yet present. This section will progress through the different aspects of the LTE framework to investigate how such a feature could be consolidated with the current implementation. In section \cref{lte_feedback_current}, we examine how feedback is currently implemented is investigated with respect to CSI and ACK/NACK information, this section will outline how this can be adopted to serve TBMA for a simple use case such as ACK/NACK, in particular how the integration of PUCCH format 1A could be achieved for TBMA.
 
 The LTE framework which is an ongoing development project of the 3GPP (3rd Generation Partnership Project), it was first proposed as an international standard in 2004 by NTT Docomo of Japan. Since its inception in 2004, the LTE framework has been developed internationally and has become a standard framework for mobile radio communication, the LTE works as an intermediary framework that connects mobile users to the internet. The scope of this thesis, looking into TBMA as a feedback mechanism from multicast transmission does not exceed the elements of the UE and the eNB in the LTE context, these can be viewed below in the figure.
 
@@ -921,7 +929,7 @@ As seen in Figure \ref{lte_protocol_stack}, the aspects of the LTE stack we are 
 
 Now the basic understanding of how the LTE framework works, with attention put on the notable aspects of the stack as discussed above, to move forward with the TBMA approach, we should understand how unicast vs multicast works (also for their respective current feedback). 
 
-Unicast - As the name suggests, this is a one-to-one transmission , where each transmission is a direct channel from the sender to explicitly one receiver, this approach takes the intended users RNTI and scrambles the payload so that the data is only receivable by the intended user. This approach means that for every transmission across unicast a corresponding radio resource is also needed for that, this has some obvious redundancies, given the repeated usage of a radio resource, regardless of multiple users have the same corresponding information. Unicast in the LTE framework is the most frequented method of transmission. If we take each bidirectional arrow as a radio resource for general downlink data and uplink feedback data in \cref{fig:unicast_vs_mutlicast}, we could clearly see how each additional user given the current unicast feedback approach begins to use huge amounts of resources. For the multicast, if TBMA was adopted, only a single resource could be used for mutlicast data and feedback, severly reducing the overhead on the network for grouped data. 
+Unicast - As the name suggests, this is a one-to-one transmission , where each transmission is a direct channel from the sender to explicitly one receiver, this approach takes the intended users RNTI and scrambles the payload so that the data is only receivable by the intended user. This approach means that for every transmission across unicast a corresponding radio resource is also needed, this has some obvious redundancies, given the repeated usage of a radio resource, regardless of multiple users have the same corresponding information. Unicast in the LTE framework is the most frequented method of transmission. If we take each bidirectional arrow as a radio resource for general downlink data and uplink feedback data in \cref{fig:unicast_vs_mutlicast}, we could clearly see how each additional user given the current unicast feedback approach begins to use huge amounts of resources. For the multicast, if TBMA was adopted, only a single resource could be used for multicast data and feedback, severely reducing the overhead on the network for grouped data. 
 
 
 \begin{figure}[h]
@@ -934,7 +942,7 @@ Unicast - As the name suggests, this is a one-to-one transmission , where each t
     \label{fig:unicast_vs_mutlicast}
 \end{figure}
 
-Multicast - This style of transmission, is a one to many relationship. Users are grouped together, then a data transmission is disseminated amongst all users at once. This style of transmission in LTE network can be achieved through a variety of ways. 
+Multicast - This style of transmission, is a one to many relationship. Users are grouped together, then a data transmission is disseminated amongst all users. This style of transmission in LTE network can be achieved through a variety of ways. 
 \begin{itemize}
     \item First a unicast transmission can be done to all users in a group individually (inefficient use of radio resource as there are many duplicates of the same data based on the group size).
     \item eMBMS - evolved multimedia broadcast service, this approach blocks a slot of the available sub frames and each user in the group has the relevant information to decode the data payload. This approach can simultaneously reach multiple users, but the scheduling of the downlink frames is very inflexible. 
@@ -965,7 +973,40 @@ To apply TBMA to feedback mechanisms in the LTE framework, the process of how LT
 
 Like the current OFDM approach, both IDFT/DFT and add/remove CP are still present. However, due to the nature of this information centric multiple user simultaneous transmission approach, we can view the parameter $\theta$ or $PMF$ signatures being sent in parallel along the same channel by multiple users,  unlike OFDM there is no need to equalise or do channel estimation as this is achieved through the matched filter, discussed in the \cref{sys_mod}.[REF]
 
-Next as per \cref{lte_feedback_current}, we can see how the resource elements are encoded as per the usual standard, in the scope of this thesis, a simple mechanism is to be researched to encode the ACK/NACK for multiple users for TBMA. 
+Next as per \cref{lte_feedback_current}, we can see how the resource elements are encoded as per the usual standard, in the scope of this thesis, a simple mechanism is to be researched to encode the ACK/NACK for multiple users for TBMA.
+
+As the scope of this proof of concept implementation in this thesis is limited to Format 1A on the PUCCH, a graphical representation of this process has been shown in \cref{fig:pucch_encode_decode_tbma}. The process for encoding an ACK/NACK on the UE side would remain the same, the UE would encode this 1 bit piece of information into the symbols highlighted in \cref{fig:pucch_encode_decode_tbma}, this PUCCH is then put through an IFFT and sent along the wireless channel, on the eNB side the reverse is then done, FFT and decode the of the signal. However at this point is where the TBMA would be divergence from the usual approach of the feedback over unicast. At this point after the PUCCH is begun to be decoded, we would take these scalar values of the ACK/NACK which are converted from raw symbol to real values and used as correlations to tell whether the received value is indeed an ACK or NACK, these are then summed and normalised as per the original TBMA equation in \cref{sys_mod}.
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[
+      width=11cm,
+     height=17cm,
+    keepaspectratio,]
+    {tbma_pucch_prop.jpg}
+    \caption{TBMA srsLTE process.}
+    \label{fig:pucch_encode_decode_tbma}
+\end{figure}
+
+
+\subsection{srsLTE Proof of concept}
+A proof of concept was done on srsLTE which was mentioned in previous section. Here, we will describe the tools used to perform this test in the real world, how the test is valid. The srsLTE project is modular library and full stack SDR implementation on the LTE network. This is LTE compliant and adheres to the standards dictated in the 3GPP specifications. The srsLTE project has developed not only a full stack for Evolved Packet Core, evolved Node B and the user equipment. But, they also have exposed a modular library which can be used to piece together different aspect from within the full stack. They also offer many example code files, which can be adapted to suit the users needs \cite{srsLTE}. 
+
+The people at srsLTE have exposed smaller unit cases for subsystems within each of the stacks. They allow quick prototyping and proof of concept coding, in particular this POC was based on their example file for $PUCCH ca TEST$, which is an example of how the PUCCH could be encoded and decoded, this example does not transmit any data over a physical wireless medium, rather it uses the same functionality as the production version of the stack until the point where the data is transmitted across the actual USRP. This means that there is no physical channel and if left as is, would equate the same scenario as described in \cref{det_chan}, however this can be adapted by programmatically adding in a random complex channel as described in \cref{rand_chan}, both approaches were tried and tested. 
+
+This example file allows for prototyping different configurations which are validated by the srsLTE stack functions. The modular functions used allow the user to try all the combinations of the PUCCH or PUSCH configurations based on the 3GPP specification, 36.211 Section 5.4, as described in the earlier sections. The example file follows the same setup procedure which would be found in the fully functioning UE/eNB setup for encoding and decoding the PUCCH/PUSCH - we are however, only interested in the PUCCH for this scope. The relative aspects of the eNB and UE are initialised with their respective configurations.
+
+
+\begin{itemize}
+    \item Srslte ue ul encode -> pucch encode
+    \item Verify PUCCH configuration as given in Section 5.4 36.211 
+    \item Procedure for determining PUCCH assignment 10.1 36.213
+    \item Encode bits  - this is just copying format 1a across
+    \item Encode PUCCH bits according to Table 5.4.1-1 in Section 5.4.1 of 36.211
+    \item Map PUCCH symbols to physical resources according to 5.4.3 in 36.211
+\end{itemize}
+ 
 
 
 
