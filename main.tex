@@ -63,6 +63,7 @@
 \item Cyclic Prefix - CP
 \item Proof of Concept - POC
 \item Universal Software Radio Peripheral - USRP
+\item Over the Air - OTA
 \end{itemize} 
 
 \section{Abstract}
@@ -995,18 +996,112 @@ A proof of concept was done on srsLTE which was mentioned in previous section. H
 
 The people at srsLTE have exposed smaller unit cases for subsystems within each of the stacks. They allow quick prototyping and proof of concept coding, in particular this POC was based on their example file for $PUCCH ca TEST$, which is an example of how the PUCCH could be encoded and decoded, this example does not transmit any data over a physical wireless medium, rather it uses the same functionality as the production version of the stack until the point where the data is transmitted across the actual USRP. This means that there is no physical channel and if left as is, would equate the same scenario as described in \cref{det_chan}, however this can be adapted by programmatically adding in a random complex channel as described in \cref{rand_chan}, both approaches were tried and tested. 
 
-This example file allows for prototyping different configurations which are validated by the srsLTE stack functions. The modular functions used allow the user to try all the combinations of the PUCCH or PUSCH configurations based on the 3GPP specification, 36.211 Section 5.4, as described in the earlier sections. The example file follows the same setup procedure which would be found in the fully functioning UE/eNB setup for encoding and decoding the PUCCH/PUSCH - we are however, only interested in the PUCCH for this scope. The relative aspects of the eNB and UE are initialised with their respective configurations.
-
+This example file allows for prototyping different configurations which are validated by the srsLTE stack functions. The modular functions used allow the user to try all the combinations of the PUCCH or PUSCH configurations based on the 3GPP specification, 36.211 Section 5.4, as described in the earlier sections. The example file follows the same setup procedure which would be found in the fully functioning UE/eNB setup for encoding and decoding the PUCCH/PUSCH - we are however, only interested in the PUCCH for this scope. The relative aspects of the eNB and UE are initialised with their respective configurations. The setup of resource configurations of the tests were as follows:
 
 \begin{itemize}
-    \item Srslte ue ul encode -> pucch encode
+    \item Physical resource blocks = 6
+    \item Transport blocks = 1
+    \item Carriers = 1
+\end{itemize}
+
+After this, each UE is to encode just one ACK or NACK message at random, a comparable situation as found in \cref{schemas_and_channels}. This data is is then sent through the pipeline as would be encoded in the real world in an LTE network. The approach initially follows the same procedure for encoding the ACK/NACK bits to the PUCCH on Format 1A, however, some changes needed to be made to accommodate TBMA style feedback. The general process for encoding to the PUCCH is as follows;
+
+\begin{enumerate}
+\label{encode_pucch_proc}
+    \item ACK or NACK chosen.
     \item Verify PUCCH configuration as given in Section 5.4 36.211 
     \item Procedure for determining PUCCH assignment 10.1 36.213
-    \item Encode bits  - this is just copying format 1a across
+    \item Encode bits - dependent on Format - 1A is a straight copy of the bits. 
     \item Encode PUCCH bits according to Table 5.4.1-1 in Section 5.4.1 of 36.211
     \item Map PUCCH symbols to physical resources according to 5.4.3 in 36.211
-\end{itemize}
+\end{enumerate}
  
+The steps to be followed are the same as shown in \cref{fig:pucch_encode_decode_tbma}. TBMA would follow the similar steps as \cref{encode_pucch_proc} with a few caveats to understand adhere to TBMA principals. With TBMA, the available subcarriers for the transmission in the case of the ACK/NACK have predefined meanings, i.e 1st available signature is for ACKs, second available for NACKs.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[
+      width=10cm,
+     height=7cm,
+    keepaspectratio,]{acknack_creation_encode.png}
+    \caption{Creation of ACK/NACK message to be encoded.}
+    \label{fig:encodeACKSNACKS}
+\end{figure}
+
+\cref{fig:encodeACKSNACKS}, details how for example in this proof of concept file, 10 UEs would have their ACK/NACK subcarriers encoded. As per the previous schema ideas, the first symbol being ACK and second being NACK is depicted by $ack_value[0]$ and $ack_value[1]$ respectively, as discussed previously the encoding and transmission of these fields are mutually exclusive, meaning it would be contradictory for a UE to encode both ACK and NACK as a feedback message. The arrays in \cref{fig:encodeACKSNACKS} depict the choice of ACK and NACK for the 10 UEs in the test. 
+
+The next step is how to physically encode these values in the the PUCCH. Configurations for format 1A are still chosen as the path through the source code. Some modifications are then made to the how these bits are encoded into the UCI. This can be viewed in \cref{fig:uci_mod_tbma}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[
+      width=7cm,
+     height=5cm,
+    keepaspectratio,]{UCI_encode.png}
+    \caption{Creation of ACK/NACK message to be encoded.}
+    \label{fig:uci_mod_tbma}
+\end{figure}
+
+Post the encoding of the UCI bits to the PUCCH, the rest of the procedure for creating the raw symbols to be transmitted is as normal. The next step in the proof of concept is deal with all the different symbols from the different users who would be transmitting the TBMA over the air. In the real world these symbols would be summed over the air by the fact they had been encoded in the same place on the actual radio link, as there is no actual radio link in this concept, the idea was adopted to sum these symbols up before they were processed on the eNB. \cref{fig:tbma_buf} can be seen that each of the symbols is just summed to there respective next users symbols, there are 1008 raw symbols due to the configurations. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[
+      width=7cm,
+     height=5cm,
+    keepaspectratio,]{tbma_buf_sum.png}
+    \caption{Creation of ACK/NACK message to be encoded.}
+    \label{fig:tbma_buf}
+\end{figure}
+
+At this point, we have all our symbols gathered up from multiple UE transmissions. The next step is we must process these symbols to get some useful information from them, this snipped is depicted in \cref{tbma_decode}. As we are decoding two different bit fields, which potentially could have the possibility of being 4 distinct combinations of events, i.e ack/ack, nack/ack etc, however as we know the outcome of TBMA in this case is a mutually exclusive event by  each UE, i.e each UE can only transmit either an ACK or NACK and not both, we are only interested in 2 outcomes when we match the correlation. The correlation matching is taken by finding the maximum value for the 4 possibilities that exist, then taking this as the max correlation that the value is in deed the value that was sent. These two correlation values are then taken to show what the ratio of the i.e ACKs to NACKs are.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[
+      width=9cm,
+     height=7cm,
+    keepaspectratio,]{decoding_tbma_acks_nacks.png}
+    \caption{Decoding of ACK/NACK message transmitted over combined channel.}
+    \label{fig:tbma_decode}
+\end{figure}
+
+
+Although there is no real radio link in this POC, it  can still be made more realistic however, by adding in a simulated random complex channel as per the simulation in the previous section. The channel, h is taken from a normal distribution with mean 0 and standard deviation 1 and applied i.i.d along the channel of each user. Taking a step forward to a more realistic setup as per the simulations in \cref{sys_mod}, we add in the duplicate re-transmissions and the random channel, seen \cref{fig:retries_ota_complex}. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[
+      width=9cm,
+     height=7cm,
+    keepaspectratio,]{retries_ota.png}
+    \caption{ User Retransmission, complex channel.}
+    \label{fig:retries_ota_complex}
+\end{figure}
+
+
+Finally, to satisfy the power constraint on the transmission discussed also in \cref{sys_mod}. The final buffer of symbols represented by $tbma buffer$ are then divided by the number of re transmissions which were done, this is to simulate the power of the symbols being collectively worth 1 transmission vs how they would be worth 30 transmission of power. This can be viewed below 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[
+      width=7cm,
+     height=5cm,
+    keepaspectratio,]{retries_ota.png}
+    \caption{ Adaptive power of transmission.}
+    \label{fig:retries_ota_complex}
+\end{figure}
+
+The received symbols are then summed as per the simulation in \cref{sim_results}. As the creation of the symbols in the srsLTE stack is as per the process described earlier in the \cref{lte_feedback_current}, when inspecting the raw symbols denoted by complex floating point types with real and imaginary parts, we can sum these in the correct position as per the specification. This allows us to take all the raw symbols which would be transmitted during a multicast feedback and inspect them on a symbol basis to work out what the overall consensus of a parameter is. 
+
+\subsubsection{POC tests and evaluation}
+The evaluation and testing of the above proposed proof of concept method and implementation is evaluated and tested in this section, result are presented and discussed.. Here, we take into consideration the two different approaches as per the simulation in previous sections. Initially we check the viability of the solution using a channel equal to 1, meaning a deterministic channel. Next, we move forward to verifying the approach with a random normal complex channel, with mean 0 and standard deviation 1. These two approaches were conducted for various random ACK/NACK combinations. 
+
+\subsubsection{Channel, h=1}
+
+
+\subsubsection{Channel, h=random complex}
+
 
 
 
