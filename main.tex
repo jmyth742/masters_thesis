@@ -131,8 +131,7 @@ This section gives an overview of the current state of the art approaches for mu
 
 Communication channels need to be designed to meet certain requirements and with the ability to handle many users or increased efficiency of limited resources. Firstly, looking at multiple access method for the wireless channel which are host-centric approaches, currently there exists three primary methods of multiple access (there are many variations on these). Time-division, Frequency-division, Code-division are to be outlined next with their respective advantages and disadvantages. Lastly we will examine how the feedback mechanisms work currently in the LTE framework, firstly with unicast transmission and its respective aspects and finally with the current multicast (eMBMS) approach. \newline
 
-\subsubsection{TDMA} 
-Time Division multiple access,  relies on signals which have been digitised and is based on time division multiplexing \cite{tdma_info}. TDMA in essence allocates different time slots for the users of a channel to transmit their data. In TDMA systems, the spectrum of the available radio is divided into user specific time slots, only the allocated user can transmit on that respective slot \cite{tdma_info}. In \cref{fig:tdma_figure}, the cyclical style of the TDMA can be seen, each user takes their turn gaining access to the channel. TDMA uses preambles to provide identification and incidental information used at the receiver \cite{tdma_info}.
+\textbf{TDMA} - Time Division multiple access,  relies on signals which have been digitised and is based on time division multiplexing \cite{tdma_info}. TDMA in essence allocates different time slots for the users of a channel to transmit their data. In TDMA systems, the spectrum of the available radio is divided into user specific time slots, only the allocated user can transmit on that respective slot \cite{tdma_info}. In \cref{fig:tdma_figure}, the cyclical style of the TDMA can be seen, each user takes their turn gaining access to the channel. TDMA uses preambles to provide identification and incidental information used at the receiver \cite{tdma_info}.
 Some of the advantages and disadvantages of this approach can be seen below.\newline
 Advantages:\
 \begin{itemize}
@@ -156,8 +155,7 @@ Disadvantages\newline
     \label{fig:tdma_figure}
 \end{figure}
 
-\subsubsection{CDMA}
-Code division multiple access uses spread spectrum techniques, meaning each user is not allocated a particular frequency, instead they utilise the full available spectrum. CDMA transmissions are encoded with pseudo-random digital sequences\cite{cdma_info}.\ The receiver knows the user specific code sequence and uses said sequence to decode the received signal, this is possible because the cross correlation between different users is small. This can be achieved as the bandwidth of the code signal is chosen to be vastly larger than the information signal, the encoding spreads the signal across the entire spectrum \cite{cdma_info}. \newline
+\textbf{CDMA} - Code division multiple access uses spread spectrum techniques, meaning each user is not allocated a particular frequency, instead they utilise the full available spectrum. CDMA transmissions are encoded with pseudo-random digital sequences\cite{cdma_info}.\ The receiver knows the user specific code sequence and uses said sequence to decode the received signal, this is possible because the cross correlation between different users is small. This can be achieved as the bandwidth of the code signal is chosen to be vastly larger than the information signal, the encoding spreads the signal across the entire spectrum \cite{cdma_info}. \newline
 Advantages:\
 \begin{itemize}
     \item CDMA provides high spectral capacity and can accommodate many users per MHz.
@@ -167,8 +165,7 @@ Disadvantage:\
 \begin{itemize}
     \item Channel pollution, where signals from too many cell sites are present in the subscriber. s phone but none of them is dominant. When this situation arises, the quality of the audio degrades
 \end{itemize}
-\subsubsection{FDMA} 
-Frequency division multiple access (FDMA) assigns users an individual frequency band of the entire available wireless channel frequency, this can be viewed in Figure \ref{fig:fdma_figure}. Each users' channel is allocated on demand when entering the cell region \cite[Section...]{fdma_info}. All active adjacent frequencies in a cell are divided by a guard band to reduce cross talk between channels. FDMA is based on frequency division multiplexing and each user has a separate frequency for both uplink and downlink \cite{fdma_info}.  
+\textbf{FDMA} - Frequency division multiple access (FDMA) assigns users an individual frequency band of the entire available wireless channel frequency, this can be viewed in Figure \ref{fig:fdma_figure}. Each users' channel is allocated on demand when entering the cell region \cite[Section...]{fdma_info}. All active adjacent frequencies in a cell are divided by a guard band to reduce cross talk between channels. FDMA is based on frequency division multiplexing and each user has a separate frequency for both uplink and downlink \cite{fdma_info}.  
 Advantages:\
 \begin{itemize}
     \item FDMA systems have lower complexity than TDMA or CDMA.
@@ -191,8 +188,7 @@ Disadvantage:\
     \label{fig:fdma_figure}
 \end{figure}
 
-\subsubsection{OFDMA}
-Orthogonal frequency division multiple access (OFDMA) is the multi user variant of orthogonal frequency division multiplexing (OFDM), where multiple access is achieved by assigning different sub carriers to different users. This approach allows simultaneous data transmission from several users. The OFDMA approach means the radio resource is two-dimensional (2D), contiguous or non contiguous sub carriers span the frequency and at the same time an integer number of OFDM symbols span the time domain\cite{ofdma_info}.
+\textbf{OFDMA} - Orthogonal frequency division multiple access (OFDMA) is the multi user variant of orthogonal frequency division multiplexing (OFDM), where multiple access is achieved by assigning different sub carriers to different users. This approach allows simultaneous data transmission from several users. The OFDMA approach means the radio resource is two-dimensional (2D), contiguous or non contiguous sub carriers span the frequency and at the same time an integer number of OFDM symbols span the time domain\cite{ofdma_info}.
 
 Although TBMA is also an orthogonal access scheme, there exists a fundamental difference between TBMA and the aforementioned schemes. TBMA is goal orientated, meaning both the channel and source are jointly encoded with this purpose in mind. If we compare this to the other approaches, we see that these schemes allow user to transmit exactly their payload with very high degrees of accuracy with no explicit goal in mind. This is a very useful and robust approach if we are concerned about arbitrary data like we would see in everyday use of LTE.  The drawbacks as discussed due to the architectural nature of these approaches require individual usage of the channel where each user regardless of any potentially common goals in transmission are mitigated. When we know for example, all users in a group are interested in a common goal orientated transmission like a consensus on the ACK/NACK of a message, then it is redundant not to use this non arbitrary information in favour of more efficient usage of the resources available. The reason this is redundant is such that huge numbers of users in a given network could lead to serious latency which is not practical for some applications in the wild. When a network requires generalist overall distribution of the group of users then an information centric approach such as TBMA may be more suitable for time or load constrained networks.
 
@@ -346,9 +342,6 @@ Looking first at the multiplexing of CQI and HARQ with normal cyclic prefix (DCI
 
 %% should i add in here more information about the super specifics about subframe allocation etc???
 
-
-
-
 \section{Type Based Multiple Access}\label{tbma_sec}
 In this section, we will go in detail the the systems model for TBMA to be realised. Next, potential data models are then presented and discussed. Thirdly, how the parameter estimation of the TBMA is presented for both identical and random channels. Finally, potential LTE channel schemes are presented and discussed with applications within the LTE framework. 
 \subsection{System Model}\label{sys_mod}
@@ -359,7 +352,7 @@ We will present and discuss the system model for TBMA. To begin, we should first
 In layman's terms, TBMA can be viewed up as an approach to transmit data when the sender and receiver adhere to a coding scheme on both the channel and the sources. If we take a given signal $s$, that each user, $k$ in the group will transmit along a channel $h$. When $s$ and $h$ are jointly designed with the design known to all actors in the environment. Given this rhetoric, we can see that for each of the given signals $s$ convoluted with the channel $h$, then the final outcome of this type of transmission can be seen as $\sum h \cdot s$. As discussed, this is a simplified view of what is happening. Next we discuss a more accurate representation of the model. 
 
 
-First, we  consider a set of User Equipment (UE) or nodes, where ${k}$ of ${K} = K$ which are conditionally independent and identical distributed (i.i.d). Each UE jointly observes data, $X^i_1, \ldots, X^i_K$, given a parameter $\theta$ and $i$ being the observed index. It is assumed that every observation  ${X^i_k \in \{1, \ldots, R\}}$, takes only discrete values with a probability mass function (PMF) ${p_{\theta} = [p_{\theta}(1), \ldots, p_{\theta}(R)]}$, where each $p_{\theta}$, corresponds to a certain real world value. The PMF belongs to a family, $\{p_{\theta}: \theta \in \Theta\}$ where $\Theta \subset \mathbb{R}$ is the parameter space.
+First, we  consider a set of User Equipment (UE) or nodes, where ${k}$ of ${K} = K$, these $K$ nodes observes various data outcomes which are conditionally independent and identical distributed (i.i.d). Each UE jointly observes data, $X^i_1, \ldots, X^i_K$, given a parameter $\theta$ and $i$ being the observed index. It is assumed that every observation  ${X^i_k \in \{1, \ldots, R\}}$, takes only discrete values with a probability mass function (PMF) ${p_{\theta} = [p_{\theta}(1), \ldots, p_{\theta}(R)]}$, where each $p_{\theta}$, corresponds to a certain real world value. The PMF belongs to a family, $\{p_{\theta}: \theta \in \Theta\}$ where $\Theta \subset \mathbb{R}$ is the parameter space.
 
 % $\mathcal{K} the set of all devices: \mathcal(K)=\{1...K\}$
 
@@ -397,6 +390,7 @@ After observing a received signal, the fusion centre will apply matched filters 
 where $\langle \boldsymbol{y}^i, \boldsymbol{s}_r\rangle$ denote the inner product of the received signal and $\boldsymbol{s}_r$ at the $i$-th transmission. Where the matched filter is the scalar product of $y$ with the orthonormal signature, because the signature is orthonormal, all the other information in the signal is removed and thus is matched to the desired signature we can see this effect in \cref{fig:sig_mat}. 
 
 There exist some constraints and assumptions for the system model. It is assumed that the energy constraint $||s_{i}^2|| \leq 1$, where the signal of each transmission does not exceed more than 1 energy unit, this means that each user should not transmit their signal with any extra power. This will play an important role later on when we discuss the re-transmission of the signal. It is also assumed that all noise and channel response (when applicable) is modelled as white complex Gaussian.   
+
 \subsection{Data Models}\label{data_models}
 % in this part i talk about how the different scenarios of data could be understood. 
 
@@ -485,14 +479,27 @@ Given the above estimation method, we observe some notable pieces of information
 
 For $K <\infty:$ The estimated PMF (\ref{eq:empf_h_const}) describes the current sample but ~$D(\hat{p}\| p_{\theta}) \neq 0$. With re-sampling over multiple transmission intervals (e.g. by selecting random subsets $\mathcal{K}^i \subset \mathcal{K}$ for transmission during the $i$-th observation interval) different measures of accuracy can be assigned (bias, variance or prediction error) to the sample estimates.
 
+Although the deterministic channel is not a well rounded picture of the real world, it does however give us some insight to underlying aspects of the systems as described in the previous two a paragraphs. This information can help build up a better picture of TBMA moving forward looking into a more realistic situation in the wild.
 
 \subsubsection{Random Complex Channel}\label{rand_chan}
 
-In the real world, it is more often than not less likely that a transmitted and receiver are in a direct line of sight (direct line of sight is when the transmission is unobstructed or reflected by obstacles in the environment). What tends to happen is that in busy environments there are obstacles such as buildings and walls that will obstruct the path of the disseminating wireless waves. The situation leads to multi path waves arriving at the receiver at different time intervals and power due to the physical affect the aforementioned obstacles have on the physicality of the waves.[ref]
+In the real world, it is more often than not less likely that a transmitted and receiver are in a direct line of sight (direct line of sight is when the transmission is unobstructed or reflected by obstacles in the environment). An example of line of sight can be seen in \cref{fig:line_of_sight}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[
+      width=6cm,
+     height=7 cm,
+    keepaspectratio,]{line_of_sight.png}
+    \caption{Line of Sight obstruction from obstacles \cite{los_pic}. }
+    \label{fig:line_of_sight}
+\end{figure}
+
+What tends to happen is that in busy environments there are obstacles such as buildings and walls that will obstruct the path of the disseminating wireless waves. The situation leads to multi path waves arriving at the receiver at different time intervals and power due to the physical affect the aforementioned obstacles have on the physicality of the waves.[ref]
 
 This means that slightly varying waveform of the original signal are received, these can be out of phase and can be viewed from an $x$ and $y$ component, having both real and imaginary values, which can be summed to give a complete imaginary component. This effect can be viewed in Figure \ref{fig:rayleigh_fade_comps}, where the dotted lines are the different aspects of the signal received and the final complex component in bold. 
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[
       width=6cm,
@@ -541,7 +548,7 @@ Differentiating with respect to $\theta$, gives:
     \frac{\partial }{\partial \theta}\ln L{(\theta)} = -\frac{2n}{\theta} + \frac{2\sum x_{i}^2}{\theta^3} \dots \dots \dots
 \end{align}
 
-Now setting the partial  derivative of $\theta$ equal to $0$ so we can get a maximum.
+Now setting the partial derivative of $\theta$ equal to $0$ so we can get a maximum.
 
 \begin{align}
     \frac{\partial }{\partial \theta}\ln L{(\theta)} = 0
@@ -572,7 +579,7 @@ Hence, rearranging, the unbiased ML estimate of the $j$-th element of $\tilde{\b
 
 In other words, with a noisy, random complex channel, we can exploit the noise over multiple re transmissions of the exact same information to allow the estimator to reduce the effect of the stochastic noise allowing a more accurate reading to be obtained. 
 
-As the deterministic channel, the complex channel channel also allows us to derive some observations. For $K \rightarrow \infty$: The estimate (\ref{eq:empf_h_rand}) converges to the true PMF as $L \rightarrow \infty$. However, this is not of practical relevance, due to the associated costs in re-transmitting the signal in such high order of magnitudes needed. For $K <\infty:$ With $L \rightarrow \infty$, the estimated ePMF~(\ref{eq:empf_h_rand}) describes the \emph{current sample} but ~$D(\hat{p}\| p_{\theta}) \neq 0$. 
+As the deterministic channel, the complex channel channel also allows us to derive some observations. For $K \rightarrow \infty$: The estimate (\ref{eq:empf_h_rand}) converges to the true PMF as $L \rightarrow \infty$. However, this is not of practical relevance, due to the associated costs in re-transmitting the signal in such high order of magnitudes needed. For $K <\infty:$ With $L \rightarrow \infty$, the estimated ePMF~(\ref{eq:empf_h_rand}) describes the \emph{current sample} but ~$D(\hat{p}\| p_{\theta}) \neq 0$. When we construct the simulation and channel in this manner, we arrive to a more consistent environment with what we would find in the wild.
 
 \subsection{Channel Schemes and application} \label{schemas_and_channels}
 The idea of how best to form the TBMA channel to maximise the likelihood of estimation of the empirical data. Different use cases exist to best utilise the channel. This next section describe potential examples of different use cases for the aforementioned approach. First, a generic event based encoding is shown. This approach illustrates how any generic event is could be encoded to the channel. Next, the data models from the previous equations, \ref{eq:event01common},\ref{eq:event02independent}, \ref{eq:event03PMF} will be given applications and illustrations.  
@@ -590,12 +597,11 @@ The idea of how best to form the TBMA channel to maximise the likelihood of esti
 
 The Schema presented in figure \ref{fig:generic_events}, shows the generic approach for taking any event and encoding it to any given available subcarrier at random. The Figure \ref{fig:generic_events} has the same notation as Figure \ref{eq:system_model} to help visually understand how the equations fit together. The same constraints for the equations apply. Any user in the network can take any available subcarrier, $S$, and encode a single bit which correspond to that of an event in the real world. 
 
-With the basic understanding graphically how to encode the channel and how it works in simplest forms, looking next at an LTE specific use case. During a multicast, it would be beneficial for the base state (eNB) to understand if a users in a multicast group has received the message. To do so, a simple ACK response could be elicited by each user for the eNB to understand if the message was received by all user equipment (UE) and whether that information was received correctly, or not. However given current methodology using the physical downlink shared channel (PDSCH) for each user in the group, this would entail each user taking up some dedicated radio resource on a dedicated channel to relay that information to the eNB. 
+With the basic understanding graphically how to encode the channel and how it works in simplest forms, looking next at an LTE specific use case. During a multicast, it would be beneficial for the base station (eNB) to understand if a users in a multicast group has received the message. To do so, a simple ACK response could be elicited by each user for the eNB to understand if the message was received by all user equipment (UE) and whether that information was received correctly, or not. However given current methodology using the physical downlink shared channel (PDSCH) for each user in the group, this would entail each user taking up some dedicated radio resource on a dedicated channel to relay that information to the eNB. 
 
-Consider, a group of $1000$ users, $k$, where each user would encode one symbol for TBMA. In LTE, the transmission of one sub frame, takes $0.5ms$, **need to calculate the latency of huge user groups etc. 
+Consider, a group of $1000$ users, $k$, where each user with the current uplink feedback methods discussed in \cref{lte_feedback_current}, would take time $t$ to transmit each ACK/NACK response on a dedicated channel. Looking at this approach we can already see for the eNB to fully understand how the channel is for these $1000$ users would take $1000t$, for all UEs to convey their respective response about the incoming packets. Clearly, we can see a huge bottleneck begin to occur. 
 
-For large networks, this would be a time consuming, resource intensive task and is it not efficient. However, using the likes of TBMA could mitigate these resource issues, each user would transmit the ACK (high bit) on a random or dedicated subcarrier, in the TBMA channel range. 
-% The eNB in turn could extrapolate the amount of users in a network which corresponds to this collective signal that is transmitted on the TBMA channel. 
+The aforementioned situation may not be such a issue for small to medium sized groups. However, for larger networks, this would be a time consuming, resource intensive task and is it not efficient. Contrarily, using the likes of TBMA could mitigate these resource issues. The previous example we had a one to one mapping of resource to user, using TBMA we would have a many to one mapping - i.e. $1000$ users would take collectively $t$, apposed to needing time for each user. We can clearly see here this is a huge advantage as the number of users in a group grows. 
 
 \begin{figure}[H]
     \centering
@@ -611,16 +617,6 @@ For large networks, this would be a time consuming, resource intensive task and 
 
 Figure \ref{fig:ack_schema}, shows how the above process could work. By spreading each users ACK signal across the available subcarrier range, we could introduce signal diversity, where the effect of noise is not concentrated on a specific subcarrier, rather this is spread out across all available.
 This would reduce the the weighting of noise when the normalisation of the signal happens, giving us a more realistic estimate. 
-% Consider a user $k$ transmits the above scheme with 2 available subcarriers. When the user transmits $S_{X_{i}}$, and the ACK signal is encoded to the $0-th$ element of the subcarrier matrix and the remaining is left empty . We would observe that signal plus noise
-% \begin{align}
-%     S_{X_{0}} = 1 + w
-% \end{align}
-
-% \begin{align}
-%     S_{X_{1}} = 0 + w
-% \end{align}
-
-% in this case, when we normalise 
 
 In the LTE framework, this approach could be used for the base station to understand if the payload was successfully received by the UE. This application is comparable to that of the data model in Case I, where a common event is shared amongst all users.
 
@@ -647,13 +643,15 @@ For example, if there are an unknown number of cars $C$ in a cell region and the
 \end{align}
 
 Where $S$ is the total number of subcarriers available in that channel construction, this approach would allow the base station to understand what proportion of the total number of users is receiving well formed data packets. Further information could be extracted if it is assumed that each user transmits with the same energy, $E$, then the base station knows what energy each user is transmitting with, thus the total energy received by the fusion centre;
+
 \begin{align}
     Z_{K}  = K \times E_{k} + w
 \end{align}
 \begin{align}
     \implies K \approx \frac{Z_{K}}{E_{K}}.
 \end{align}
-Where the number of users can be approximated based on the total energy of the received signal, this holds true because of the energy constraint in [REF], this is an approximation because of the additive nature of noise in the transmission. 
+
+Where the number of users can be approximated based on the total energy of the received signal, this holds true because of the energy constraint discussed in \cref{sys_mod}, this is an approximation because of the additive nature of noise in the transmission. 
 
 In the LTE framework a very useful piece of feedback information each user can give the eNB is the Channel quality indicator (CQI) [REF], The CQI is, as the name suggests an indication of the quality of the channel each user is experiencing. This CQI value allows the eNB to best understand which modulation scheme to use for transmission. The CQI value ranges from 0-15 (modulation from QPSK to 64QAM), with 0 meaning the UE is out of cell range and 15 being the best case scenario. This is a very useful tool for the eNB to understand how efficiently depending on the external environmental factors to encode the information along the channel. 
 
@@ -695,11 +693,11 @@ It is worth noting that in the case of this approach, that the total number of e
 Such that if a user $k$, transmits a PMF of CQI values, each encoded subcarrier must only have $\frac{1}{X}$ proportion of the total energy available for each user. This is an important consideration and assumption to allow for further analysis of the received signal. 
 
 
-As different scenarios are presented, some return higher levels of granularity than others. Above, some scenarios have been presented where only general information about ratios are of interest, however the scheme presented in Figure \ref{fig:cqi_pmf}, touches on how we can deduce more accurate types of information, these encoding and transmitted channels would not only allow the base station to understand which region of CQI users are in, but also as each user transmits a PMF, potentially we could also understand the variance of their channel quality. 
+As different scenarios are presented, some return higher levels of granularity than others. Above, some scenarios have been presented where only general information about ratios are of interest, however the scheme presented in Figure \ref{fig:cqi_pmf}, touches on how we can deduce more accurate types of information, these encoding and transmitted channels would not only allow the base station to understand which region of CQI users are in, but also as each user transmits a PMF, potentially we could also understand the variance of their channel quality.  Overall we can see that this goal orientated approach can indeed to tailored to the specific needs of each individual use case. As TBMA utilises this joint encoding and goal orientated approach, we can clearly see that given some consideration, sensible choice of scheme design, the TBMA approach could be adopted to fit a plethora of needs. 
 
 
 \section{Simulation Results and analysis}\label{sim_results}
-In this section the results from the numerical simulations will be presented with some analysis. Prior assumptions will be outlined before the the numerical simulation is presented, then a short discussion on the results comparing the assumptions with the real outcome. 
+In this section the results from the numerical simulations will be presented with analysis. Prior assumptions will be outlined before the the numerical simulation is presented, then a short discussion on the results comparing the assumptions with the real outcome. 
 \subsection{Evaluations methods}
 To evaluate the results of the simulation, two approaches were considered. First looking at the Mean Squared Error (MSE) of the ground truth and the outcome of the TBMA.  Some prior assumptions about the environment are also considered, where all simulations are done for an $SNR \in (-10\dots40)dB$, all users transmit their respective payload with the energy constraint  $||s_{i}^2|| \leq 1$.  
 
@@ -1067,7 +1065,7 @@ At this point, we have all our symbols gathered up from multiple UE transmission
 \end{figure}
 
 
-Although there is no real radio link in this POC, it  can still be made more realistic however, by adding in a simulated random complex channel as per the simulation in the previous section. The channel, h is taken from a normal distribution with mean 0 and standard deviation 1 and applied i.i.d along the channel of each user. Taking a step forward to a more realistic setup as per the simulations in \cref{sys_mod}, we add in the duplicate re-transmissions and the random channel, seen \cref{fig:retries_ota_complex}. 
+Although there is no real radio link in this POC, it can still be made more realistic however, by adding in a simulated random complex channel as per the simulation in the previous section. The channel, h is taken from a normal distribution with mean 0 and standard deviation 1 (for both the real and imaginary parts) and applied i.i.d along the channel of each user. Taking a step forward to a more realistic setup as per the simulations in \cref{sys_mod}, we add in the duplicate re-transmissions and the random channel, seen \cref{fig:retries_ota_complex}. 
 
 \begin{figure}[H]
     \centering
@@ -1087,26 +1085,134 @@ Finally, to satisfy the power constraint on the transmission discussed also in \
     \includegraphics[
       width=7cm,
      height=5cm,
-    keepaspectratio,]{retries_ota.png}
-    \caption{ Adaptive power of transmission.}
+    keepaspectratio,]{adapt_power.png}
+    \caption{Adaptive power of transmission.}
     \label{fig:retries_ota_complex}
 \end{figure}
 
-The received symbols are then summed as per the simulation in \cref{sim_results}. As the creation of the symbols in the srsLTE stack is as per the process described earlier in the \cref{lte_feedback_current}, when inspecting the raw symbols denoted by complex floating point types with real and imaginary parts, we can sum these in the correct position as per the specification. This allows us to take all the raw symbols which would be transmitted during a multicast feedback and inspect them on a symbol basis to work out what the overall consensus of a parameter is. 
+% The received symbols are then summed as per the simulation in \cref{sim_results}. As the creation of the symbols in the srsLTE stack is as per the process described earlier in the \cref{lte_feedback_current}, when inspecting the raw symbols denoted by complex floating point types with real and imaginary parts, we can sum these in the correct position as per the specification. This allows us to take all the raw symbols which would be transmitted during a multicast feedback and inspect them on a symbol basis to work out what the overall consensus of a parameter is. 
 
 \subsubsection{POC tests and evaluation}
 The evaluation and testing of the above proposed proof of concept method and implementation is evaluated and tested in this section, result are presented and discussed.. Here, we take into consideration the two different approaches as per the simulation in previous sections. Initially we check the viability of the solution using a channel equal to 1, meaning a deterministic channel. Next, we move forward to verifying the approach with a random normal complex channel, with mean 0 and standard deviation 1. These two approaches were conducted for various random ACK/NACK combinations. 
 
 \subsubsection{Channel, h=1}
+Several different tests were conducted with a deterministic channel to see if the ratio of ACKs to NACKs could be understood, this would be a great additional feature to the LTE, as for the reasons discussed earlier about redundancy and the more effective usage of the radio resources available for larger scale networks and users. 
 
+Simulations of 10, 50 and 100 users were conducted, with a range of different of parameters for the retries and the various ACK/NACK combinations. This subsection only shows an overview as the channel is deterministic. This deterministic channel is used as a bench mark to ensure the encoding and decoding of the combined TBMA channel performs as expected. 
+
+\begin{table}[H]
+    \centering
+ \begin{tabular}{||c c c c||} 
+ \hline
+ No. UEs & No. ACK/NACK & No. Retx & Result \\ [0.5ex] 
+ \hline\hline
+ 10 & 0.3/0.7 & 10 &  0.3/0.7 \\ 
+ \hline
+ 50 & 0.3/0.7 & 10 & 0.3/0.7 \\
+ \hline
+ 100 & 0.6/0.4 & 30 & 0.6/0.4 \\
+ \hline
+ 200 & 0.6/0.4 & 30 & 0.6/0.4 \\ [1ex] 
+ \hline
+\end{tabular}
+    \caption{Results of deterministic channel srsLTE POC}
+    \label{tab:my_label}
+\end{table}
 
 \subsubsection{Channel, h=random complex}
+The same setup and tests as above for the a random complex channel were also conducted, this random complex channel is modelled as $\mathcal{CN}(0,1)$. However, now as this channel is no longer deterministic, the below results are more specific and to the individual simulations conducted in the previous sections of this thesis. We will look at the results of the following situations:
+
+\begin{enumerate}
+    \item Increasing UEs, fixed re-transmissions, fixed ACK/NACK. 
+    \item Increasing re-transmissions, fixed UEs, fixed ACK/NACK
+    \item Varying ACK/NACK, fixed UEs, fixed re-transmissions.
+\end{enumerate}
+
+Situation 1, we would expect that the increasing number of UEs in the feedback TBMA , that the received and decoded ACK/NACKs would tend towards the real world values that had been transmitted. 
+
+\begin{table}[H]
+    \centering
+ \begin{tabular}{||c c c c||} 
+ \hline
+ No. UEs & No. ACK/NACK & No. Retx & Result \\ [0.5ex] 
+ \hline\hline
+ 10 & 0.3/0.7 & 10 &  0.3/0.7 \\ 
+ \hline
+ 50 & 0.3/0.7 & 10 & 0.3/0.7 \\
+ \hline
+ 100 & 0.6/0.4 & 30 & 0.6/0.4 \\
+ \hline
+ 200 & 0.6/0.4 & 30 & 0.6/0.4 \\ [1ex] 
+ \hline
+\end{tabular}
+    \caption{Results of random channel, Increasing UEs srsLTE POC}
+    \label{tab:rand_chan_UEs_increase}
+\end{table}
+
+As expected we see in \cref{tab:rand_chan_UEs_increase}
 
 
+Next we look at the varying affect of the re-transmissions on the received 
 
+\begin{table}[H]
+    \centering
+ \begin{tabular}{||c c c c||} 
+ \hline
+ No. UEs & No. ACK/NACK & No. Retx & Result \\ [0.5ex] 
+ \hline\hline
+ 10 & 0.3/0.7 & 10 &  0.3/0.7 \\ 
+ \hline
+ 50 & 0.3/0.7 & 10 & 0.3/0.7 \\
+ \hline
+ 100 & 0.6/0.4 & 30 & 0.6/0.4 \\
+ \hline
+ 200 & 0.6/0.4 & 30 & 0.6/0.4 \\ [1ex] 
+ \hline
+\end{tabular}
+    \caption{Results of random channel, varying ACK/NACKs srsLTE POC}
+    \label{tab:rand_chan_rtx_increase}
+\end{table}
+
+As we can see from \cref{tab:rand_poc_res}, 
+
+Finally for completeness, we look at the performance of the varying ACK/NACK combinations, we would assume that the combination of ACK/NACK being transmitted shouldn't make much of a difference, perhaps when All the UEs have a equal consensus on the outcome we would see slightly undesirable behaviour and when things are equal we may not 
+
+\begin{table}[H]
+    \centering
+ \begin{tabular}{||c c c c||} 
+ \hline
+ No. UEs & No. ACK/NACK & No. Retx & Result \\ [0.5ex] 
+ \hline\hline
+ 10 & 0.3/0.7 & 10 &  0.3/0.7 \\ 
+ \hline
+ 50 & 0.3/0.7 & 10 & 0.3/0.7 \\
+ \hline
+ 100 & 0.6/0.4 & 30 & 0.6/0.4 \\
+ \hline
+ 200 & 0.6/0.4 & 30 & 0.6/0.4 \\ [1ex] 
+ \hline
+\end{tabular}
+    \caption{Results of random channel, Increasing retransmissions srsLTE POC}
+    \label{tab:rand_chan_rtx_increase}
+\end{table}
 
 
 \section{Summary and outlook}\label{summary_out}
+
+This thesis has presented a goal orientated approach for multiple users to transmit correlated information across a wireless medium using type based multiple access. Firstly, in a simulation environment, looking into which attributes of the simulation play the biggest role into minimising the error. This led to identifying that the number of re-transmissions of the same data helped increase the accuracy of the TBMA channel. However, this led to an interesting idea that all nodes in a multicast group sending re-transmitted data at full power is both redundant and counter productive, so the power constraint that all transmissions for a TBMA channel, should not exceed the combined power limit of 1.
+
+This simulation could be extended to take into consideration various other encoding schemes and spreading said schemes across multiple subcarriers to better the signal diversity and possible attain better results. Other evaluation metrics could be used apposed to that of the MSE, for example, KL divergence could be used in future to understand the divergence from the underlying PMF to the received one.  
+
+Looking into how to apply this TBMA to real world LTE framework was the next step, looking closely how the like of ACK/NACK re transmission works in the current setup, was the introductions to knowing how TBMA in relation to ACK/NACK could be integrated into the likes of the current LTE network. Identifying how the simplest form of feedback worked in LTE led to a design choice around the PUCCH transmission of ACK/NACK through format 1A. Further investigation into how the the  mapping of these high level concepts of ACK/NACK to the physical resource was investigated. 
+
+Upon understanding how these feedback channels works through 3GPP specification led into a proof of concept implementation through a LTE complaint open source SDR project called srsLTE, this project adheres to the same implementation found in the technical specifications from the 3GPP. Through the use of some stock test file which follows the normal LTE procedure for encoding and decoding up-link transmission, an adaption of the aforementioned test was created to allow for the encoding and decoding of 2 subcarrier TBMA channel with ACK/NACK in mind. Although this implementation was not strictly done over a radio interface, it was however propagated through all the respective functionality which it would be exposed to in normal LTE mode through the srsLTE project. In an attempted to ensure the most realistic representation of the setup without an actual radio interface, a modelled complex channel was introduced to bridge this gap. 
+
+Overall as expected the result for the deterministic approach were always perfect representations of the ground truth. Although this is not a realistic situation, it has given the basic backbone for knowing that the process of encoding and decoding the TBMA channel was indeed plausible. Contrast to this, looking at the result when there was a complex random channel introduced between the encode/decode of the symbols, we can see that although exact ratios were not achieved. However, we see that the resultant ratios are still of within suitable range of error, and could be of use in the real world. 
+
+Moving forward and next steps, would be to trial the same system over a physical radio link. Although the simulated channel is a good model of the real world, to ensure this would be a completely viable solution, it should be trialled with a real radio link. Upon verifying that this assumption is correct, next steps should be to implement the other encoding schemes as per the \cref{schemas_and_channels}. Extending the implementation from 2 fields for ACK/NACK to multiple fields capable of conveying more granular data would be a suitable next step. The current setup for encoding ACK/NACK would also need to be extended for encoding PMFs from the UEs, currently this POC only encompasses a one-shot style on one signature on the PUCCH. 
+
+This thesis has only investigated how the TBMA approach could be integrated into the lower layers of the LTE network, more investigation into how the higher layers of the LTE stack would play a role in the formation and organisation of these TBMA packets. More over, other considerations to be taken into account moving forward would be such items as, testing the viability of integrating this approach with live ACK/NACK date from the unicast channel, how could this be multiplexed given the current setup in LTE. Other questions remain open too - should this TBMA have its own predefined format for the PUCCH or should it just utilise the remaining free areas in the PUCCH/PUSCH, what style of priority should be used. This proof of concept implementation merely address the physical how to of TBMA and does not take into consideration other related questions about how the finer integration should work.
+
 
 
 \addcontentsline{toc}{section}{References}
