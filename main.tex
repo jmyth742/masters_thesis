@@ -8,7 +8,7 @@
 \usepackage[acronym]{glossaries}
 \usepackage{hyperref}
 \usepackage[capitalise, noabbrev]{cleveref}
-
+\makeglossaries
 
 % \cref of cleveref: strip Eq. from equation references
 % https://tex.stackexchange.com/questions/122174/how-to-strip-eq-from-cleverf
@@ -18,14 +18,28 @@
 \crefmultiformat{equation}{(#2#1#3)}%
 { and~(#2#1#3)}{, (#2#1#3)}{ and~(#2#1#3)}
 
-\title{Masters Thesis TBMA}
+\title{Feedback Channels for Multicast Signals in 3GPP LTE and 5G New Radio Networks}
+
 \author{Jonathan Smyth}
+% \author[2]{\small Supervisor: Prof Sławomir Stańczak}
+% % \author[2]{Bob Jones}
+% \affil[1]{Department of Mathematics, University X}
+% \affil[2]{Department of Biology, University Y}
+% {\small Supervisor: Prof Sławomir Stańczak}
+% {\small Supervisor: Prof Danielle Fontanelli}
+% {\small Supervisor: Prof Dennis Wieruch}
 \date{Jan 2021}
 
 \begin{document}
 
 \maketitle
+\newpage 
 \tableofcontents
+\newpage
+
+\section{Acknowledgements}
+
+\newpage
 
 \section{Abbreviations}
 \begin{itemize}
@@ -65,14 +79,17 @@
 \item Universal Software Radio Peripheral - USRP
 \item Over the Air - OTA
 \end{itemize} 
+\newpage
+
 
 \section{Abstract}
-
+\newpage
 \section{Thesis Structure}
 %% overall general structure of the thesis and what to expect.
-The thesis is structured as follows; firstly a short introduction will be given in \cref{intro}, next the problem we are facing and context of why this approach is ideal in \cref{prob_context}. With some background motivation understood, we would move onto the current state of the art approaches for feedback in LTE and multiple access methodologies which is found in \cref{sota}. We would move then into the \cref{tbma_sec} where the system model for TBMA is presented and discussed. This will give the basis of the mathematical model which is to be understood for TBMA. Data specific models are then presented in \cref{data_models} based on potential use-cases for TBMA, this will illustrate how TBMA could be applied to different data models in the real world. Once the model is understood, the process of how we can estimate the parameters based on our model is then presented in \cref{param_estimation} and discussed, this is broken down based on a random complex channel and an identical channel \cite{tbma}. After we set our theoretic framework, some examples of real world applications of TBMA are presented in an illustrative and informative manner, showing how the different subcarriers and channel structure should look, see \cref{schemas_and_channels}
+The thesis is structured as follows; firstly a short introduction will be given in \cref{intro}, next the problem we are facing and context of why this approach is ideal in \cref{prob_context}. With some background motivation understood, we would move onto the current state of the art approaches for feedback in LTE and multiple access methodologies which is found in \cref{sota}, this section presents also the current process in the LTE framework of how feedback mechanism work. Next, we would move then into the \cref{tbma_sec} where the system model for TBMA is presented and discussed. This will give the basis of the mathematical model which is to be understood for TBMA. Data specific models are then presented in \cref{data_models} based on potential use-cases for TBMA, this will illustrate how TBMA could be applied to different data models in the real world. Once the model is understood, the process of how we can estimate the parameters based on our model is then presented in \cref{param_estimation} and discussed, this is broken down based on a random complex channel and an identical channel \cite{tbma}. After we set our theoretic framework, some examples of real world applications of TBMA are presented in an illustrative and informative manner, showing how the different subcarriers and channel structure should look, see \cref{schemas_and_channels}
 
-Next, we would move on to the simulations and numerical analysis of the results of TBMA, comparing different features of the channel architecture that we can exploit to tune our results and optimise the channel, see \cref{sim_results}. Next a discussion on the application to the LTE network in depth and how thee feedback could be achieved given the current LTE implementation, this is discussed and presented \cref{lte_app}. Finally, future steps and work of TBMA are presented in \cref{summary_out}. 
+Next, we would move on to the simulations and numerical analysis of the results of TBMA, comparing different features of the channel architecture that we can exploit to tune our results and optimise the channel, see \cref{sim_results}. Next a discussion on the application to the LTE network in depth and how thee feedback could be achieved given the current LTE implementation, this is discussed and presented \cref{lte_app}. A proof of concept implementation based on the open source project srsLTE is presented and tested in a more realistic environment than the simulation in \cref{srslte_poc}. Finally, future steps and outlook of TBMA are presented in \cref{summary_out}. 
+\newpage
 
 \section{Introduction}\label{intro}
 %% in the introduction i present the overall idea of what 5G communication is, some overview on the applications of the 5g and some potential drawbacks as we move into this new age of IoT and the ever expanding number of users in a network.
@@ -80,17 +97,17 @@ Next, we would move on to the simulations and numerical analysis of the results 
 The capabilities of the 5th generation of mobile communications promise new application in variety of
 fields, where some examples are autonomous driving, immersive audio/video, Internet-of-Things and Industry 4.0. While the primary focus of the first release of 3GPP New Radio (NR) is mobile communications in general, future releases will also comprise the above mentioned vertical markets. In contrast to the current release of 3GPP NR, 3GPP LTE is already addressing the vertical markets with a reduced feature set. Consequently, the current extension of 3GPP LTE can also be seen as proof-of concept for the next releases of 3GPP NR.
 
-Applications like autonomous driving highly depend on a reliable and efficient communication link between vehicles and road infrastructure. Therefore, broadcast and multicast signals are essential to perform efficient communication with the scarce spectrum resources. However, current methods of broadcast/multicast just offer communications without link quality information to the target group. Feedback mechanisms are generally present only for unicast transmissions. In order to enable efficient feedback mechanisms for multicast communications, information centric communication approaches, e.g. based on type based multiple access (TBMA)\cite{tbma}, promise an efficient implementation. This is further justified if a large number of devices with strict latency requirements are taken into account, rendering dedicated feedback channels ineffective. If we consider an overview on how CQI feedback mechanisms work currently in the LTE framework, it is done on the PUSCH or PUCCH (Physical Up-link shared channel, Physical uplink control channel) depending on the exact settings of the transmission \cite{ETSITS136213}. We see that each user connected to an eNB is given an RNTI (Radio Network Identifier), this RNTI is used to scramble the data transmitted and to decode the received data on the eNB, both for uplink and downlink. This means that in the current setup in LTE, the eNB must decode the total number of users in a group one by one, on their specific RNTI. When considering this for a large number of grouped users, we notice that the base station must individually decode each users response based on their RNTI. This can cause bottle necking in safety critical systems, as the computation for one feedback is multiplied by the entire group size. Thus this leads to potential high level of latency in feedback from the group.
+Applications like autonomous driving highly depend on a reliable and efficient communication link between vehicles and road infrastructure. Therefore, broadcast and multicast signals are essential to perform efficient communication with the scarce spectrum resources. However, current methods of broadcast/multicast just offer communications without link quality information to the target group. Feedback mechanisms are generally present only for unicast transmissions. In order to enable efficient feedback mechanisms for multicast communications, information centric communication approaches, e.g. based on type based multiple access (TBMA)\cite{tbma}, promise an efficient implementation. This is further justified if a large number of devices with strict latency requirements are taken into account, rendering dedicated feedback channels ineffective. If we consider an overview on how CQI feedback mechanisms work currently in the LTE framework, they are done on the PUSCH or PUCCH (Physical Up-link shared channel, Physical uplink control channel, respectively) depending on the exact settings of the transmission \cite{ETSITS136213}. We see that each user connected to an eNB is given an RNTI (Radio Network Identifier), this RNTI is used to scramble the data transmitted and to decode the received data on the eNB, both for uplink and downlink. This means that in the current setup in LTE, the eNB must decode the total number of users in a group one by one, on their specific RNTI. When considering this for a large number of grouped users, we notice that the base station must individually decode each users response based on their RNTI. This can cause bottle necking in safety critical systems, as the computation for one feedback is multiplied by the entire group size. Thus this leads to potential high level of latency in feedback from the group, not to mention the opportunity cost to other usage of the radio link.
 
 In this thesis, an information centric feedback mechanism for multicast signals shall be investigated. In this context, based on the current standard of 3GPP LTE \cite{3gpp36321} and NR\cite{3gpp38321}, the feedback mechanism of the unicast shall be extended to allow efficient multicast feedback.
 
-The TBMA approach for feedback mechanism shall be investigated and optimised to understand what are the key performance indicators to allow for successful decoding of the information sent along the channel. In particular, the number of users, adaptive power, style of encoding the channel and the amount of re-transmissions of the data with play a centric role in deciding what is best. Upon understanding the aforementioned parameters a proof of concept practical implementation would be presented using srsLTE \cite{tbma}. 
+The TBMA approach for feedback mechanism shall be investigated and optimised to understand what are the key performance indicators to allow for successful and improved accuracy in decoding the information sent along the channel. In particular, the number of users, adaptive power, style of encoding the channel and the amount of re-transmissions of the data with play a centric role in deciding what is best. Upon understanding the aforementioned parameters a proof of concept practical implementation would be presented using srsLTE open source SDR project \cite{tbma}. 
 
 
 \subsection{Problem and Context}\label{prob_context}
 %% here is the section where i give the problem some context about the problem at hand, why it is important and how it can be solved.
 In classical communication, the source and the channel are encoded separately, thus the channel is independent of the data \cite{shannon_theory}. However information centric communication (ICC) approaches the problem differently, by jointly encoding both the the source and the channel. ICC utilises the knowledge of both the source and the channel to best optimise the channel coding. \cite{information_centric}.
-Many different approaches exist for the classical communication approach, CDMA, TDMA and FDMA [Find cite]. These approaches which have their respective pros and cons have one common drawback which inhibits them from being the ideal approach to the problem which is being addressed, they are host centric approaches. The question for this thesis is how can the design of the MAC best suits the an information centric approach. How can the MAC be designed jointly for encoding both the source and channel. 
+Many different approaches exist for the classical communication approach, CDMA, TDMA and FDMA \cite{multiple_access_protocols}. These approaches which have their respective pros and cons have one common drawback which inhibits them from being the ideal approach to the problem which is being addressed, they are host centric approaches. The question for this thesis is how can the design of the MAC best suits the an information centric approach. How can the MAC be designed jointly for encoding both the source and channel. 
 If we consider the TBMA approach, on a high level view, we can see that to access the channel there are no strict requirements other than encoding their respective data and transmitting. If we consider this situation as is, we would think that the if all users transmit their signal at roughly the same time, the individual decomposition of the signal is difficult.   interference occurs when the maxima of two waves are 180 degrees out of phase: a positive displacement of one wave is cancelled exactly by a negative displacement of the other wave. The amplitude of the resulting wave is zero, this effect can be seen in \cref{fig:wave_inter}. In a classic approach TBMA could be susceptible to destructive interference due to having no constraints on time of transmission, however as we are interested in the collective consensus of the signal, this potential interference plays in the favour of TBMA. 
 
 \begin{figure}
@@ -100,17 +117,17 @@ If we consider the TBMA approach, on a high level view, we can see that to acces
      height=7cm,
     keepaspectratio,]
     {interence_waves.png}
-    \caption{Constructive and Destructive wave interference [http://hydrogen.physik.uni-wuppertal.de/hyperphysics/hyperphysics/hbase/sound/interf.html] }
+    \caption{Constructive and Destructive wave interference \cite{interference_pic} }
     \label{fig:wave_inter}
 \end{figure}
 
-Consider two similar scenarios in a multicast transmission from a base station, the base station transmits some information to all its grouped users. First the eNB wants feedback information about, for example, the quality of the downlink channel . As TBMA is information centric, each encoded subcarrier on transmission has a particular non arbitrary meaning, which in the case of host-centric may not be true. As we jointly encode the source and the channel, potential interference should be mitigated which could be introduced in host-centric approaches. Second, the base station instead of feedback information, wants normal uplink traffic, which could be any kind of arbitrary data from a user, in this case, more conventional host-centric approaches may be of better use. In this thesis we show that significant gains can be realised in estimation quality and in system resource consumption if the physical layer and the multiple access are designed jointly for the purpose of estimation, not just explicit value retrieval.
+Consider two similar scenarios in a multicast transmission from a base station, the base station transmits some information to all its grouped users. First the eNB wants feedback information about, for example, the quality of the downlink channel . As TBMA is information centric, each encoded subcarrier on transmission has a particular non arbitrary meaning, which in the case of device-centric may not be true. As we jointly encode the source and the channel, potential interference should be mitigated which could be introduced in host-centric approaches. Second, the base station instead of feedback information, wants normal uplink traffic, which could be any kind of arbitrary data from a user, in this case, more conventional device-centric approaches may be of better use. In this thesis we show that significant gains can be realised in estimation quality and in system resource consumption if the physical layer and the multiple access are designed jointly for the purpose of estimation, not just explicit value retrieval.
 
 Some of the main problems when approaching these larger scale multicast feedback mechanisms is how best to use the wireless channel to maximise the resource available. Usually base stations have finite resources for computation and poorly designed systems can cause latency in transmission. An example could be a huge number of cars in a city grid, a multicast transmission of information is sent to all users in the group.  In this use case, feedback using normal methods such as unicast, would consume a large portion of the resources available because the current approach mandates each feedback message from each user would be computed individually at the base station, this means the total time taken for all feedback messages to be computed and understood is the number of users in the group multiplied by the computation time of one. This approach is not feasible for huge numbers of users.
 
 Using information centric approaches such as TBMA, would allow simultaneous usage of the resources available and substantially reduce the latency of the feedback. Users in a massive sensor network would allow for different types of information to be fed back to the base station. In LTE different modulation schemes exist which are used depending on the quality of the wireless channel. Modulations scheme play a key role in adapting to noisy environments and allow for consistent and efficient transmission of data. One such indicator which plays a role in the type of modulation used in data transmission is the Channel Quality Indicator (CQI). Consider the scenario when multiple users receiving unicast transmissions, each UE, could be anywhere in the cell region with unknown obstacles or interference, this means that there exists the situation when different modulation schemes are being used for different UEs attached to the base station. 
 
-In the case of multicast user groups, it is not possible to modulate a single multi cast in different schemes, instead a single scheme is needed for a single multicast to many users, this scenario in itself elicits the same logically inefficient error we see in the aforementioned paragraph as all users in the group would need to relay their own CQI. Instead, a better approach to understand the collective consensus of the CQI and thus deriving the bare minimum modulation needed for a sufficient transmission would be via a TBMA approach where each user constructs a PMF of their CQI history for a given time period, this would allow the eNB to better and more efficiently adapt their multicast transmission to best suit the users. If we look at \cref{fig:pmf_subcarriers}, we can see that how we could understand a collective TBMA transmission, with the source and channel encoded with a particular goal in mind. This example of an ACK/NACK transmission could be exactly what is needed for a base station to understand an overall idea of how the multicast channel is performing. 
+In the case of multicast user groups, it is not possible to modulate a single multi cast in different schemes, instead a single scheme is needed for a single multicast to many users, this scenario in itself elicits the same logically inefficient error we see in the aforementioned paragraph as all users in the group would need to relay their own CQI. Instead, a better approach to understand the collective consensus of the CQI and thus deriving the bare minimum modulation needed for a sufficient transmission would be via a TBMA approach where each user constructs a PMF of their CQI history for a given time period, this would allow the eNB to better and more efficiently adapt their multicast transmission to best suit the users. If we look at \cref{fig:pmf_subcarriers}, we can see that how we could understand a collective TBMA transmission, with the source and channel encoded with a particular goal in mind. This example of an CQI transmission could be exactly what is needed for a base station to understand an overall idea of how the multicast channel is performing. Thus choosing an appropriate modulation scheme which would suit the masses. 
 
 \begin{figure}
     \centering
@@ -122,14 +139,14 @@ In the case of multicast user groups, it is not possible to modulate a single mu
     \label{fig:pmf_subcarriers}
 \end{figure}
 
-Given the above example, we can see how it is no longer important to understand what every individuals exact measurement is, rather it is more important to get an overall understanding of how good the channel quality is for the majority of the users in a group. This can allow sensible choices of modulation schemes by the base stations and better use of radio resources as an overall, whilst satisfying the overall needs of a group instead of the individualistic. 
+Given the above example, we can see how it is no longer important to understand what every individuals exact measurement is, rather it is more important to get an overall understanding of how good the channel quality is for the majority of the users in a group. Under this premise, we do not need to know that i.e exactly 15 UEs had a CQI of 6 and 8 UEs had a CQI of 12. In this situation the granularity of the data is less important. Knowing this information can allow sensible choices of modulation schemes by the base stations and better use of radio resources as an overall, whilst satisfying the overall needs of a group instead of the individualistic. 
 
 \section{State of the art} \label{sota}
 \subsection{Multiple Access Methods}
 %% standard SoTA, here i compare the  different access technologies typically found in wireless mediums, showing the positive points and negative points of each. then finally a short summary on why they are not good for huge networks with given constraints. 
-This section gives an overview of the current state of the art approaches for multi access channel methodologies and how feedback mechanisms currently work in the LTE framework. A problem which is obvious in wireless communication, is how to share a common medium. A radio resource can be thought of as a proportion (this can be multiplexed by time, frequency or code) of the wireless radio medium which is available \cite{access_tech}. 
+This section gives an overview of the current state of the art approaches for multi access channel methodologies and how feedback mechanisms currently work in the LTE framework. A problem which is obvious in wireless communication, is how to share a common medium. A radio resource can be thought of as a proportion (this can be multiplexed by time, frequency or code) of the wireless radio medium which is available \cite{access_tech}. Although this thesis is not interested explicitly in traditional multiple access methodologies, some background on how they function is a good basis to understand and emphasis the utility of TBMA in the thesis's context. 
 
-Communication channels need to be designed to meet certain requirements and with the ability to handle many users or increased efficiency of limited resources. Firstly, looking at multiple access method for the wireless channel which are host-centric approaches, currently there exists three primary methods of multiple access (there are many variations on these). Time-division, Frequency-division, Code-division are to be outlined next with their respective advantages and disadvantages. Lastly we will examine how the feedback mechanisms work currently in the LTE framework, firstly with unicast transmission and its respective aspects and finally with the current multicast (eMBMS) approach. \newline
+Communication channels need to be designed to meet certain requirements and with the ability to handle many users or increased efficiency of limited resources. Firstly, looking at multiple access method for the wireless channel which are host-centric approaches, currently there exists three primary methods of multiple access (there are many variations on these). Time-division, Frequency-division, Code-division are to be outlined next with their respective advantages and disadvantages. Lastly we will examine how the feedback mechanisms work currently in the LTE framework, looking at how the different metrics are encoded and transmitted back to the base station.  \newline
 
 \textbf{TDMA} - Time Division multiple access,  relies on signals which have been digitised and is based on time division multiplexing \cite{tdma_info}. TDMA in essence allocates different time slots for the users of a channel to transmit their data. In TDMA systems, the spectrum of the available radio is divided into user specific time slots, only the allocated user can transmit on that respective slot \cite{tdma_info}. In \cref{fig:tdma_figure}, the cyclical style of the TDMA can be seen, each user takes their turn gaining access to the channel. TDMA uses preambles to provide identification and incidental information used at the receiver \cite{tdma_info}.
 Some of the advantages and disadvantages of this approach can be seen below.\newline
@@ -165,7 +182,7 @@ Disadvantage:\
 \begin{itemize}
     \item Channel pollution, where signals from too many cell sites are present in the subscriber. s phone but none of them is dominant. When this situation arises, the quality of the audio degrades
 \end{itemize}
-\textbf{FDMA} - Frequency division multiple access (FDMA) assigns users an individual frequency band of the entire available wireless channel frequency, this can be viewed in Figure \ref{fig:fdma_figure}. Each users' channel is allocated on demand when entering the cell region \cite[Section...]{fdma_info}. All active adjacent frequencies in a cell are divided by a guard band to reduce cross talk between channels. FDMA is based on frequency division multiplexing and each user has a separate frequency for both uplink and downlink \cite{fdma_info}.  
+\textbf{FDMA} - Frequency division multiple access (FDMA) assigns users an individual frequency band of the entire available wireless channel frequency, this can be viewed in \cref{fig:fdma_figure}. Each users' channel is allocated on demand when entering the cell region \cite[Section...]{fdma_info}. All active adjacent frequencies in a cell are divided by a guard band to reduce cross talk between channels. FDMA is based on frequency division multiplexing and each user has a separate frequency for both uplink and downlink \cite{fdma_info}.  
 Advantages:\
 \begin{itemize}
     \item FDMA systems have lower complexity than TDMA or CDMA.
@@ -190,11 +207,19 @@ Disadvantage:\
 
 \textbf{OFDMA} - Orthogonal frequency division multiple access (OFDMA) is the multi user variant of orthogonal frequency division multiplexing (OFDM), where multiple access is achieved by assigning different sub carriers to different users. This approach allows simultaneous data transmission from several users. The OFDMA approach means the radio resource is two-dimensional (2D), contiguous or non contiguous sub carriers span the frequency and at the same time an integer number of OFDM symbols span the time domain\cite{ofdma_info}.
 
-Although TBMA is also an orthogonal access scheme, there exists a fundamental difference between TBMA and the aforementioned schemes. TBMA is goal orientated, meaning both the channel and source are jointly encoded with this purpose in mind. If we compare this to the other approaches, we see that these schemes allow user to transmit exactly their payload with very high degrees of accuracy with no explicit goal in mind. This is a very useful and robust approach if we are concerned about arbitrary data like we would see in everyday use of LTE.  The drawbacks as discussed due to the architectural nature of these approaches require individual usage of the channel where each user regardless of any potentially common goals in transmission are mitigated. When we know for example, all users in a group are interested in a common goal orientated transmission like a consensus on the ACK/NACK of a message, then it is redundant not to use this non arbitrary information in favour of more efficient usage of the resources available. The reason this is redundant is such that huge numbers of users in a given network could lead to serious latency which is not practical for some applications in the wild. When a network requires generalist overall distribution of the group of users then an information centric approach such as TBMA may be more suitable for time or load constrained networks.
+Although TBMA is also an orthogonal access scheme, there exists a fundamental difference between TBMA and the aforementioned schemes. Briefly mentioned before, TBMA is goal orientated, meaning both the channel and source are jointly encoded with this purpose in mind \cite{tbma}. If we compare this to the other approaches, we see that these schemes allow user to transmit exactly their payload with very high degrees of accuracy with no explicit goal in mind. This is a very useful and robust approach if we are concerned about arbitrary data like we would see in everyday use of LTE.  
+
+The drawbacks as discussed due to the architectural nature of these approaches require individual usage of the channel where each user regardless of any potentially common goals in transmission are mitigated. When we know for example, all users in a group are interested in a common goal orientated transmission like a consensus on the ACK/NACK message or a PMF of CQI values, then it is redundant not to use this non arbitrary information in favour of more efficient usage of the resources available.
+
+The reason this is redundant is such that huge numbers of users in a given network could lead to serious latency which is not practical for some applications in the wild. When a network requires generalist overall distribution of the group of users then an information centric approach such as TBMA may be more suitable for time or load constrained networks.
 
 \subsection{LTE feedback methods}\label{lte_feedback_current}
 
-In the current LTE framework, both uplink and downlink transmission are possible. Multicast transmission is downlink traffic data which is disseminated from the eNB to the UE(s), feedback from the multicast transmission is uplink traffic. However, as discussed in the previous sections, we can see there is no dedicated feedback mechanism for multicast transmission. In LTE the eNB is interested in a plethora of metrics which are beneficial for increasing the efficiency of servicing the UEs. LTE has many different coding schemes which are used based on the quality of the channel which is influenced by interference from other cells and noise.  Link adaptation is a crucial aspect of LTE that allows for the most efficient and robust transmission of data \cite{umts_sesia}[Section 10.2]. LTE architecture has many layers for different purposes, in the case of this thesis and feedback, we are most interested in the Physical layer and the MAC layer. Looking at the specification from 3GPP we can see how the current breakdown of feedback mechanisms look. Currently, there exists both periodic and aperiodic feedback from the UE to the eNB, these types of feedback can either be on the PUCCH or the PUSCH, depending on the type of feedback requested and the configuration \cite{ETSITS136213}[Section 7.2]. To understand the feedback mechanism in better detail, an overview of the propagation of the channel structure is needed. The mapping of these channels to the physical layer from the logical layer can be viewed in the Figure \ref{fig:lte_chan_prop}.
+In the current LTE framework, both uplink and downlink transmission are possible. Multicast transmission is downlink traffic data which is disseminated from the eNB to the UE(s), feedback from the multicast transmission is uplink traffic. However, as discussed in the previous sections, we can see there is no dedicated feedback mechanism for multicast transmission. In LTE the eNB is interested in a plethora of metrics which are beneficial for increasing the efficiency of servicing the UEs. 
+
+LTE has many different coding schemes which are used based on the quality of the channel which is influenced by interference from other cells and noise.  Link adaptation is a crucial aspect of LTE that allows for the most efficient and robust transmission of data \cite{umts_sesia}[Section 10.2]. LTE architecture has many layers for different purposes, in the case of this thesis and feedback, we are most interested in the Physical layer and the MAC layer. Looking at the specification from 3GPP we can see how the current breakdown of feedback mechanisms look. Currently, there exists both periodic and aperiodic feedback from the UE to the eNB, these types of feedback can either be on the PUCCH or the PUSCH, depending on the type of feedback requested and the configuration \cite{ETSITS136213}[Section 7.2]. 
+
+To understand the feedback mechanism in better detail, an overview of the propagation of the channel structure is needed. The mapping of these channels to the physical layer from the logical layer can be viewed in the  \cref{fig:lte_chan_prop}.
 
 \begin{figure}[h]
     \centering
@@ -206,12 +231,13 @@ In the current LTE framework, both uplink and downlink transmission are possible
     \label{fig:lte_chan_prop}
 \end{figure}
 
-The data initially enters the logical channel, which provide services for the Medium Access Control (MAC) layer within the LTE protocol structure. Next the data is then multiplexed to the transport channel which offers information for the MAC and higher layers, via the UL-SCH. Finally the data reaches the physical channel. 
+The data initially enters the logical channel, which provide services for the Medium Access Control (MAC) layer within the LTE protocol structure. Next the data is then multiplexed to the transport channel which offers information for the MAC and higher layers, via the UL-SCH. Finally the data reaches the physical channel. This outlook is important to understand where the origins of the feedback information are coming from. In LTE the physical layer itself does not decided on the feedback information, it merely is responsible for encoding and decoding. The MAC layer on the UE is where the multiplexing of data and feedback such as CQI and HARQ ACK/NACK are processed. \cite{3gpp25319}[Section 7]. The scope of this thesis focuses more on the physical aspects of LTE, thus outlining the main channel of importance below;
 
 \begin{itemize}
     \item PUCCH - used for control data, this data is transmitted in the form of Up-link control information. This usually contains information related to Scheduling request, HARQ ACK/NACK and CQI. 
     \item PUSCH - this is the main user data channel, in certain conditions it also carriers the UCI and feedback metrics ACK/NACK and CQI.
 \end{itemize}
+
 
 \subsubsection{Channel State indicators}
 At a high level we can group these feedback items as channel state information (CSI) , which can be broken down into;
@@ -297,7 +323,7 @@ Format 1b & 2-bit HARQ ACK/NACK with/without SR\\
 \hline
 Format 2 &  CQI (20 coded bits)\\
 \hline
-Format 2 & CQI and 1- or 2-bit HARQ ACK/NACK (20 bits) for extended CP only\\
+Format 2 & CQI and 1 or 2-bit HARQ ACK/NACK ex CP\\
 \hline
 Format 2a & CQI and 1-bit HARQ ACK/NACK (20 + 1 coded bits)\\
 \hline
@@ -339,6 +365,8 @@ When the PUCCH is being utilised to transmit the feedback control data, a region
 As we see in \cref{tab:pucch_formats} is possible to multiplex both the CQI and HARQ ACK/NACK data from a UE to the eNB on the PUCCH, providing the higher layers have not disabled this feature, when this is disabled the UE may only transmit the HARQ. However, in sub frames where the eNB scheduler has allowed for simultaneous transmission of both metrics a multiplex of both aspects needs to be achieved. In this case there are two situations of note, for normal CP and extended CP \cite{umts_sesia}[Section 17.3.3]. 
 
 Looking first at the multiplexing of CQI and HARQ with normal cyclic prefix (DCI format 2a/2b). To transmit a 1 or 2 bit HARQ ACK/NACK together with the CQI, the ACK/NACK bits are not scrambled, but only modulated with either BPSK/QPSK, resulting in a single modulation symbol $d_{HARQ}$.  This single modulation symbol $d_{HARQ}$ is then used to modulated the second Reference Signal (RS) symbol in each CQI slot, meaning the ACK/NACK is actually signalled through the RS itself.
+
+
 
 %% should i add in here more information about the super specifics about subframe allocation etc???
 
@@ -392,7 +420,6 @@ where $\langle \boldsymbol{y}^i, \boldsymbol{s}_r\rangle$ denote the inner produ
 There exist some constraints and assumptions for the system model. It is assumed that the energy constraint $||s_{i}^2|| \leq 1$, where the signal of each transmission does not exceed more than 1 energy unit, this means that each user should not transmit their signal with any extra power. This will play an important role later on when we discuss the re-transmission of the signal. It is also assumed that all noise and channel response (when applicable) is modelled as white complex Gaussian.   
 
 \subsection{Data Models}\label{data_models}
-% in this part i talk about how the different scenarios of data could be understood. 
 
 Looking at how to model the data, there are three distinct use cases for this section. First looking at how to estimate a single common event value, for example, each user is transmitting either $1$ or $0$, where if the common event occurs, $1$ is transmitted otherwise 0. Next, we move to a more granular approach for estimating a range of common events. Finally we take another step and look at how we could transmit and understand a PMF of real world values. 
 \subsubsection{Case~I}
@@ -483,7 +510,7 @@ Although the deterministic channel is not a well rounded picture of the real wor
 
 \subsubsection{Random Complex Channel}\label{rand_chan}
 
-In the real world, it is more often than not less likely that a transmitted and receiver are in a direct line of sight (direct line of sight is when the transmission is unobstructed or reflected by obstacles in the environment). An example of line of sight can be seen in \cref{fig:line_of_sight}
+In the real world, it is more often than not less likely that a transmitted and receiver are in a direct line of sight (direct line of sight is a transmission path that is unobstructed or reflected by obstacles in the environment). An example of line of sight can be seen in \cref{fig:line_of_sight}
 
 \begin{figure}[H]
     \centering
@@ -698,9 +725,8 @@ As different scenarios are presented, some return higher levels of granularity t
 
 \section{Simulation Results and analysis}\label{sim_results}
 In this section the results from the numerical simulations will be presented with analysis. Prior assumptions will be outlined before the the numerical simulation is presented, then a short discussion on the results comparing the assumptions with the real outcome. 
-\subsection{Evaluations methods}
-To evaluate the results of the simulation, two approaches were considered. First looking at the Mean Squared Error (MSE) of the ground truth and the outcome of the TBMA.  Some prior assumptions about the environment are also considered, where all simulations are done for an $SNR \in (-10\dots40)dB$, all users transmit their respective payload with the energy constraint  $||s_{i}^2|| \leq 1$.  
-
+\subsection{Evaluations method}
+To evaluate the results of the simulation, the Mean Squared Error (MSE) of the ground truth and the outcome of the TBMA was used. Some prior assumptions about the environment are also considered, where all simulations are done for an $SNR \in (-10\dots40)dB$, all users transmit their respective payload with the energy constraint  $||s_{i}^2|| \leq 1$.  
 Where the SNR and $\sigma2$ defined as:
 \begin{equation} 
 SNR = 10^{\frac{SNR_{i}}{10}}    
@@ -905,7 +931,7 @@ The LTE framework which is an ongoing development project of the 3GPP (3rd Gener
     \label{fig:lte_arch}
 \end{figure}
 
-This simple overview consists of a base station (evolved node b, or eNB) and then all the connected user equipment (UE). The LTE network is responsible for decoding, encoding and exchanging information between the users through the IP network. 
+This simple overview consists of a base station (evolved node b, or eNB) and then all the connected user equipment (UE), which could be an entity connected to the LTE network which is not an eNB. The LTE network is responsible for decoding, encoding and exchanging information between the users through the IP network. 
 
 The LTE framework is broken down into different layers which are all responsible for different aspects of the life cycle of the data, within the scope of this thesis, we are concerned with Layer 1 ( the physical layer) and part of Layer 2 (primarily the MAC). 
 
@@ -920,7 +946,7 @@ The LTE framework is broken down into different layers which are all responsible
     \label{lte_protocol_stack}
 \end{figure}
 
-As seen in Figure \ref{lte_protocol_stack}, the aspects of the LTE stack we are interested in are:
+As seen in \cref{lte_protocol_stack}, the aspects of the LTE stack we are interested in are:
 \begin{itemize}
     \item Physical layer (PHY) - The physical layer is responsible for all things physical, modulation, power control, link adaption and the physical encoding of the symbols. It communicates data with the MAC layer and receives control data from the RRC.[ref]
     \item Medium access control (MAC) - MAC is responsible for mapping data between logical channels and transport channels. The MAC handles all the multiplexing from logical to transport channels.[ref] 
@@ -943,17 +969,19 @@ Unicast - As the name suggests, this is a one-to-one transmission , where each t
 
 Multicast - This style of transmission, is a one to many relationship. Users are grouped together, then a data transmission is disseminated amongst all users. This style of transmission in LTE network can be achieved through a variety of ways. 
 \begin{itemize}
-    \item First a unicast transmission can be done to all users in a group individually (inefficient use of radio resource as there are many duplicates of the same data based on the group size).
+    \item Unicast transmission can be done to all users in a group individually (inefficient use of radio resource as there are many duplicates of the same data based on the group size).
     \item eMBMS - evolved multimedia broadcast service, this approach blocks a slot of the available sub frames and each user in the group has the relevant information to decode the data payload. This approach can simultaneously reach multiple users, but the scheduling of the downlink frames is very inflexible. 
     \item Single cell point-to-multiple point (SCPTM) - this is an amalgamation of the eMBMS and unicast, this approach best utilises the radio resource, whilst reaching multiple users in one transmission.  This approach allows flexible scheduling of the resources and keeps the radio overhead to a minimum. 
 \end{itemize}
 
-Feedback for unicast. Currently as of the 3GPP implementation, feedback for unicast transmission is still on a one-to-one topology (can be seen in \cref{fig:unicast_vs_mutlicast}), examples of feedback information the the base station would receive from this one-to-one approach (this is also based on the same RNTI as the DL unicast), would be ;
+Feedback for unicast. Currently as of the 3GPP implementation, feedback for unicast transmission is still on a one-to-one topology (can be seen in \cref{fig:unicast_vs_mutlicast}), examples of feedback information the the base station would receive from this one-to-one approach, the following aspects are discussed in earlier sections;
 \begin{itemize}
     \item HARQ ACK/NACK
     \item CQI
 \end{itemize}
- 
+
+Currently whilst writing this thesis, feedback metrics for the other transmission styles mentioned earlier both rely on the same method that is used in unicast style transmission. 
+
 \subsection{Application of TBMA to LTE}
 
 To understand how the an implementation of TBMA could work, we need to understand data progress from human readable format to being encoded and mapped and transmitted along the channel.
@@ -970,7 +998,8 @@ To apply TBMA to feedback mechanisms in the LTE framework, the process of how LT
     \label{fig:tbma_lte_view}
 \end{figure}
 
-Like the current OFDM approach, both IDFT/DFT and add/remove CP are still present. However, due to the nature of this information centric multiple user simultaneous transmission approach, we can view the parameter $\theta$ or $PMF$ signatures being sent in parallel along the same channel by multiple users,  unlike OFDM there is no need to equalise or do channel estimation as this is achieved through the matched filter, discussed in the \cref{sys_mod}.[REF]
+Like the current OFDM approach, both IDFT/DFT and add/remove CP are still present. However, due to the nature of this information centric multiple user simultaneous transmission approach, we can view the parameter $\theta$ or $PMF$ signatures being sent in parallel along the same channel by multiple users, unlike OFDMA there is no need to equalise or do channel estimation as we are more interested in the correlation of the values which have been sent and summed over the air.
+% this is achieved through the matched filter, discussed in the \cref{sys_mod}.[REF]
 
 Next as per \cref{lte_feedback_current}, we can see how the resource elements are encoded as per the usual standard, in the scope of this thesis, a simple mechanism is to be researched to encode the ACK/NACK for multiple users for TBMA.
 
@@ -989,7 +1018,7 @@ As the scope of this proof of concept implementation in this thesis is limited t
 \end{figure}
 
 
-\subsection{srsLTE Proof of concept}
+\subsection{srsLTE Proof of concept}\label{srslte_poc}
 A proof of concept was done on srsLTE which was mentioned in previous section. Here, we will describe the tools used to perform this test in the real world, how the test is valid. The srsLTE project is modular library and full stack SDR implementation on the LTE network. This is LTE compliant and adheres to the standards dictated in the 3GPP specifications. The srsLTE project has developed not only a full stack for Evolved Packet Core, evolved Node B and the user equipment. But, they also have exposed a modular library which can be used to piece together different aspect from within the full stack. They also offer many example code files, which can be adapted to suit the users needs \cite{srsLTE}. 
 
 The people at srsLTE have exposed smaller unit cases for subsystems within each of the stacks. They allow quick prototyping and proof of concept coding, in particular this POC was based on their example file for $PUCCH ca TEST$, which is an example of how the PUCCH could be encoded and decoded, this example does not transmit any data over a physical wireless medium, rather it uses the same functionality as the production version of the stack until the point where the data is transmitted across the actual USRP. This means that there is no physical channel and if left as is, would equate the same scenario as described in \cref{det_chan}, however this can be adapted by programmatically adding in a random complex channel as described in \cref{rand_chan}, both approaches were tried and tested. 
@@ -1073,12 +1102,12 @@ Although there is no real radio link in this POC, it can still be made more real
       width=9cm,
      height=7cm,
     keepaspectratio,]{retries_ota.png}
-    \caption{ User Retransmission, complex channel.}
+    \caption{ User Re-transmission, complex channel.}
     \label{fig:retries_ota_complex}
 \end{figure}
 
 
-Finally, to satisfy the power constraint on the transmission discussed also in \cref{sys_mod}. The final buffer of symbols represented by $tbma buffer$ are then divided by the number of re transmissions which were done, this is to simulate the power of the symbols being collectively worth 1 transmission vs how they would be worth 30 transmission of power. This can be viewed below 
+Finally, to satisfy the power constraint on the transmission discussed also in \cref{sys_mod}. The final buffer of symbols represented by $tbma buffer$ are then divided by the number of re transmissions which were done, this is to simulate the power of the symbols being collectively worth 1 transmission vs how they would be worth 30 transmission of power. This can be viewed below;
 
 \begin{figure}[H]
     \centering
@@ -1087,8 +1116,10 @@ Finally, to satisfy the power constraint on the transmission discussed also in \
      height=5cm,
     keepaspectratio,]{adapt_power.png}
     \caption{Adaptive power of transmission.}
-    \label{fig:retries_ota_complex}
+    \label{fig:retries_ota_complex_adapt}
 \end{figure}
+
+Overall the POC has shown that the goal-orientated approach of TBMA can be work with that of the LTE network, the implementation described above can handle encoding and decoding ACK/NACK TBMA transmission with a single signature for each ACK and NACK. It follow the same procedure which would be found in a live LTE network implemented by srsLTE, with some caveats on how the encoding is performed. Obviously some deviation was needed to achieve the decoding of the channel, however there has been nothing which based on the research done in this thesis has violated any serious LTE concerns.  
 
 % The received symbols are then summed as per the simulation in \cref{sim_results}. As the creation of the symbols in the srsLTE stack is as per the process described earlier in the \cref{lte_feedback_current}, when inspecting the raw symbols denoted by complex floating point types with real and imaginary parts, we can sum these in the correct position as per the specification. This allows us to take all the raw symbols which would be transmitted during a multicast feedback and inspect them on a symbol basis to work out what the overall consensus of a parameter is. 
 
