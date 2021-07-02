@@ -126,6 +126,8 @@ For the comparison of my work with existing sources I agree that it shall be ent
     \acro{RNTI}{Radio network identifier}
     \acro{PUSCH}{Physical uplink shared channel}
     \acro{PUCCH}{Physical uplink control channel}
+    \acro{PDSCH}{Physical Downlink Shared Channel}
+    \acro{SIB}{System Information Block}
     \acro{TDMA}{Time division multiple access}
     \acro{FDMA}{Frequency division multiple access}
     \acro{OFDMA}{Orthogonal frequency division multiple access}
@@ -144,6 +146,8 @@ For the comparison of my work with existing sources I agree that it shall be ent
     \acro{USRP}{Universal software Radio Peripheral}
     \acro{POC}{Proof of concept}
     \acro{OTA}{Over the air}
+    \acro{MBMS}{Multimeadia Broadcast Multicast Service}
+    \acro{SC-PTM}{Single-Cell Point to Multipoint}
     \acro{MAC}{multiple access channel}
     \acro{MCS}{modulation and coding scheme}
     \acro{MLE}{maximum likelihood estimation}
@@ -190,7 +194,7 @@ If we consider applications like inner city autonomous driving in an LTE context
 In order to enable efficient feedback mechanisms for multicast communications, information centric communication approaches, e.g. based on type based multiple access (TBMA)\cite{tbma}, promise an efficient implementation. This is further justified if a large number of devices with strict latency requirements are taken into account, rendering dedicated feedback channels ineffective. 
 
 In this thesis, an information centric feedback mechanism for multicast signals shall be investigated. The information centric access method, \ac{TBMA}  will be investigated through literature and simulated to find key parameters which improve the robustness of transmission, different styles of encoding the channel will be investigated. 
-Current LTE Feedback mechanisms shall be first investigated through literature, to understand how they work in the current setup and point out and potential areas in which they could be applied to the context of this thesis. Next using a SDR project, "srsLTE" a proof of concept implementation of the above investigation about both \ac{TBMA} and Feedback mechanisms will be conjoined to produce a proof of concept implementation for LTE feedback over TBMA for multiple users. 
+Current LTE Feedback mechanisms shall be first investigated through literature, to understand how they work in the current setup and point out and potential areas in which they could be applied to the context of this thesis. Next using a SDR project, "srsLTE" a \ac{POC} implementation of the above investigation about both \ac{TBMA} and Feedback mechanisms will be shown and discussed. 
 
 
 \subsection{Problem and Context}\label{prob_context}
@@ -364,7 +368,7 @@ which is the distance between the original distribution and the distribution of 
 \end{align}
 
 
-conversely we would arrive at a different estimation for that of the rayleigh fading channel, by utilising the \ac{MLE}, this is proofed through \cref{glossary}. 
+conversely we would arrive at a different estimation for that of the rayleigh fading channel, by utilising the \ac{MLE}, shown in \cref{glossary}. 
 
 
 % bold p . add in notation. matric capital , small bold is vector. 
@@ -894,17 +898,16 @@ The LTE framework is broken down into different layers which are all responsible
 
 As seen in \cref{lte_protocol_stack}, the aspects of the LTE stack we are interested in are:
 \begin{itemize}
-    \item Physical layer (PHY) - The physical layer is responsible for all things physical, modulation, power control, link adaption and the physical encoding of the symbols. It communicates data with the MAC layer and receives control data from the RRC.[ref]
-    \item Medium access control (MAC) - MAC is responsible for mapping data between logical channels and transport channels. The MAC handles all the multiplexing from logical to transport channels.[ref] The MAC layer is responsible for the 'when' the feedback mechanisms is used. 
+    \item Physical layer (PHY) - The physical layer is responsible for all things physical, modulation, power control, link adaption and the physical encoding of the symbols. It communicates data with the MAC layer and receives control data from the RRC.
+    \item Medium access control (MAC) - MAC is responsible for mapping data between logical channels and transport channels. The MAC handles all the multiplexing from logical to transport channels. The MAC layer is responsible for the 'when' the feedback mechanisms is used. 
 \end{itemize}
 
 Now the basic understanding of how the LTE framework works, with attention put on the notable aspects of the stack as discussed above, to move forward with the TBMA approach, we should understand how unicast vs multicast (SCPTM and eMBMS) works.
 
 In unicast the base station (eNB) sends distinct messages to each \ac{UE} as depicted in \cref{fig:unicast}. To allow this individualistic message transmission each \ac{UE} must have its own unique C-RNTI (Cell - Radio Network Temporary Identifier) as an identifier. The \ac{crnti} is used to scramble the downlink traffic (through the PDSCH) on a sub frame basis for that specific \ac{UE}. That means, that no other UEs in that cell region can decode that respective sub frame, instead any information which is not specific that UEs particular \ac{crnti} is ignored. The CRNTI is attain by each UE when it enters a cell-region \cite[Table 7.11]{3gpp36321} or in the random access procedure.  
 
-The LTE framework is not limited to unicast transmission, two forms of multicast are also possible. Firstly we will look at MBMS, which unlike unicast utilises another primary channel called the physical multicast channel (PMCH), which is used for evolved multimedia broadcast multicast service (eMBMS). One notable difference between these two approaches is that eMBMS cannot be multiplexed with unicast, this is due to the structure of their sub frames differing. The multicast data from eMBMS is usually transmitted from many synchronised base station at the same time, this mode is called Multicast Broadcast Single Frequency Network (MBSFN). Finally, in LTE there exist a new style of multicast transmission, which is known as \ac{SC-PTM}  
 
-Unicast - As the name suggests, this is a one-to-one transmission , where each transmission is a direct channel from the sender to explicitly one receiver, this approach takes the intended users RNTI and scrambles the payload so that the data is only receivable by the intended user. This approach means that for every transmission across unicast a corresponding radio resource is also needed, this has some obvious redundancies, given the repeated usage of a radio resource, regardless of multiple users have the same corresponding information. Unicast in the LTE framework is the most frequented method of transmission. If we take each bidirectional arrow as a radio resource for general downlink data and uplink feedback data in \cref{fig:unicast}, we could clearly see how each additional user given the current unicast feedback approach begins to use huge amounts of resources. For the multicast, if TBMA was adopted, only a single resource could be used for multicast data and feedback, severely reducing the overhead on the network for grouped data. 
+
 
 
 \begin{figure}[H]
@@ -917,8 +920,8 @@ Unicast - As the name suggests, this is a one-to-one transmission , where each t
     \label{fig:unicast}
 \end{figure}
 
-Multicast - This style of transmission, is a one to many relationship. Users are grouped together, then a data transmission is disseminated amongst all users. This style of transmission in LTE network can be achieved through a variety of ways. There 
 
+The LTE framework is not limited to unicast transmission, two forms of multicast are also possible. Multicast is a one to many relationship. Users are grouped together, then a data transmission is disseminated amongst all users, this style of transmission is . This style of transmission in LTE network can be achieved through a variety of ways. There both \ac{MBMS} and \ac{SC-PTM}. Firstly we will look at MBMS, which unlike unicast utilises another primary channel called the physical multicast channel (PMCH), which is used for evolved multimedia broadcast multicast service (eMBMS). One notable difference between these two approaches is that eMBMS cannot be multiplexed with unicast, this is due to the structure of their sub frames differing. The multicast data from eMBMS is usually transmitted from many synchronised base station at the same time, this mode is called Multicast Broadcast Single Frequency Network (MBSFN). Finally, in LTE there exist a new style of multicast transmission, which is known as \ac{SC-PTM}, which can be viewed as a combination of \ac{MBMS} and unicast. Where the SC-PTM channel utilises the \ac{PDSCH} apposed to the PMCH as in MBMS. The idea of this approach is such that unicast and multicast data can be multiplexed in the same sub-frame. This has some very notable advantages compared to that of MBMS. SC-PTM uses the same methodology as unicast, however as in unicast each \ac{UE} has a \ac{crnti} which limits transmission to that specific RNTI for each individual UE, SC-PTM utilises a SC-RNTI which is attained through the \ac{SIB}20 for any interested grouped data. This SC-RNTI is then used to un-scramble the relevant sub-frame which contains the information needed to acquire the group specific RNTI known as the G-RNTI. This G-RNTI is then used like any other C-RNTI by a UE, with the notable difference that multiple UEs have it. So in effect SC-PTM is like a unicast in regards to dedicated resources being used for a transmission, but the scope of the G-RNTI is for multiple users. SC-PTM also allows for fully flexible scheduling and is not constraint to specific frames or regions of the PDSCH like MBMS is. This is a more efficient method to disseminate grouped user data vs \ac{MBMS}. As we can see with SC-PTM, LTE has already begun to look at better methods to utilises one dedicated resource for multiple users. This approach ties in well with \ac{TBMA} as a method to reduce the resource radio overhead where possible for grouped transmission. Consider an example where multicast happens through SC-PTM and the feedback from the multicast is accomplished through \ac{TBMA}. In this scenario, we would arrive at true representation of \cref{fig:mutlicast}, where each arrow depicts a fully flexible one-to-many and many-to-one relationship of the downlink and uplink transmission in the LTE context, in the aforementioned situation, we would complete the circle for efficient multicast transmission.  
 
 \begin{figure}[H]
     \centering
@@ -1104,17 +1107,17 @@ The power of each users signal is then transmitted with the following:
 \end{align}
 and the White Gaussian complex noise is modelled as:
 \begin{align}
-    noise = \mathcal{CN}(0,1)
+    noise \approx \mathcal{CN}(0,1)
 \end{align}
 Finally we arrive at the output of the channel, which is the same equation as described \cref{eq:system_model}. Lastly, we have the performance metrics MSE, which is a defined as the MSE between the ground truth values (depicted in \ref{fig:MSE}, as the $Tx$) and the received signal (depicted in \ref{fig:MSE} as $Rx$).
 
 
 The following simulations were conducted in two different modes. All simulations consider random white complex Gaussian noise, $w$. First we take a identical channel response, $h=1$, which would show to us the behaviour of the system model in the best case channel scenario. Next, we consider a more realistic scenario when the channel is modelled as a response of size 3, which is modelled as a white complex Gaussian (fading channel). The comparison of the varying affect of the number of users, $k$ and re-transmissions $l$ is considered and evaluated. 
-The numerical analysis will compare the effects of TBMA;
+The numerical comparison of TBMA with varying;
 \begin{itemize}
-    \item  with varying number of users, $K$
-    \item TBMA with varying re-transmissions, $l$ with power constraint.    
-    \item  with varying re-transmissions, $l$ without power constraint.
+    \item number of users, $K$
+    \item re-transmissions, $l$ with power constraint.    
+    \item re-transmissions, $l$ without power constraint.
 \end{itemize}
 
 For all methods analysed numerically, the distribution is uniform, where, the probability of each subcarrier being encoded is $\frac{1}{R}$, where $R$ is the total number of subcarriers available, which coincides with the total number of events available for a given transmission, see \cref{sota}. 
